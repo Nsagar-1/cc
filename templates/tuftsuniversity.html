@@ -1,0 +1,1124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Recommendation Feed</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #efefef;
+            margin: 0;
+            padding: 0;
+        }
+        
+        nav{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background : #1876f2;
+            padding: 5px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo{
+            color: #efefef;
+             display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.5rem;
+
+        }
+        .nav-left, .nav-right{
+            display: flex;
+            align-items: center;
+        }
+        .nav-left ul li{
+            list-style: none;
+            display: inline-block;
+        }
+        .nav-left ul li img{
+            width: 28px;
+            margin: 0 15px;
+        }
+        .nav-user-login img{
+            width: 40px;
+            border-radius: 50%;
+            cursor:pointer;
+        }
+        .nav-user-icon{
+            margin-left: 30px;
+            width: 10%;
+            height: 10%
+
+        }
+        .search-box{
+            background: #efefef;
+            width: 80%;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+        }
+        .search-box img{
+            width: 18px;
+        }
+        .search-box input{
+            width: 100%;
+            background: transparent;
+            padding: 10px;
+            outline: none;
+            border: 0;
+        }
+        .online{
+            position: relative;
+
+        }
+        .online::after{
+            content: '';
+            width: 7px;
+            height: 7px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background-color: #41db51;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .container{
+            display: flex;
+            justify-content: space-between;
+            padding: 13px 5%;
+
+        }
+        .left-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+        }
+        .right-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+
+        }
+        .main-content{
+            flex-basis: 40%;
+            height : 40%;
+            margin-right : 5%;
+
+        }
+        .sc-search-row{
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+        .sc-search-icon{
+            font-size: 20px;
+            margin-right: 10px;
+            color: #666;
+
+        }
+        .sc-search-box{
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .suggestions-box {
+          position: absolute;
+          background-color: #fff;
+          width: 40%; /* Adjust width to match input */
+          max-height: 150px;
+          overflow-y: auto;
+          z-index: 1;
+          margin-top: 12%;
+          border-radius: 10px;
+          margin-left: 0;
+        }
+
+        .suggestion {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .suggestion:hover{
+            background-color: #f0f0f0;
+        }
+    
+
+        .imp-links a{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            color: #626262;
+            width: fit-content;
+        }
+        .imp-links a img{
+            width: 25px;
+            margin-right: 15px;
+        }
+        h3{
+            margin: 10px;
+            color: #cbdffa;
+            
+        }
+
+        .write-post-container{
+            width: 100%;
+            background : #fff;
+            border-radius : 6px;
+            padding : 20px;
+            color: #626262;
+        }
+        .user-profile{
+            display: flex; 
+            align-items: center;
+        }
+        .user-profile img{
+            width: 45px;
+            border-radius : 50%;
+            margin-right: 10px;
+        }
+        .user-profile p{
+            margin-bottom : -5px;
+
+        }
+        .user-profile small{
+            font-size: 12px;
+
+        }
+        .post-input-container{
+            padding-left : 55px;
+            padding-top : 20px;
+        }
+        .post-input-container textarea{
+            width : 100%;
+            border : 0;
+            outline : 0;
+            border-bottom : 1px solid #ccc;
+            background: transparent;
+            resize: none;
+        }
+        .add-post-links{
+            display : flex;
+            margin-top: 10px;
+        }
+        .add-post-links button{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            color : #626262;
+            margin-right: 30px;
+            font-size: 13px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding : 0;
+        }
+        .add-post-links button img{
+            width : 20px;
+            margin-right : 10px;
+        }
+
+        h2{
+            color: black;
+            margin-left: 10px;
+        }
+        h1{
+            color: black;
+            margin-left: 10px;
+        }
+
+        /* Table styles */
+.university-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Table header */
+.university-table thead {
+    background-color: #8B0000; /* Harvard Crimson color */
+    color: #fff;
+}
+
+.university-table th {
+    padding: 12px;
+    text-align: left;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Table rows */
+.university-table tbody tr {
+    background-color: #ecf0f1;
+    border-bottom: 1px solid #ddd;
+}
+
+.university-table td {
+    padding: 12px;
+    font-size: 14px;
+}
+
+/* Hover effect for table rows */
+.university-table tbody tr:hover {
+    background-color: #bdc3c7;
+}
+
+/* Links in the table */
+.university-table a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.university-table a:hover {
+    text-decoration: underline;
+}
+
+/* Title */
+.title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+/* Bullet points list styling */
+.criteria-list {
+    list-style: none;
+    padding-left: 20px;
+}
+
+.criteria-list li {
+    font-size: 18px;
+    line-height: 1.8;
+    padding-left: 30px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+/* Custom icons for each list item */
+.icon {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    font-size: 24px;
+    color: #8B0000; /* Harvard Crimson color */
+}
+
+/* Bold the strong elements */
+.criteria-list li strong {
+    font-weight: bold;
+}
+
+/* Add hover effect for each list item */
+.criteria-list li:hover {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding-left: 35px;
+    transition: all 0.3s ease;
+}
+
+/* Bullet points list styling */
+.suggestions-list {
+    list-style: none;
+    padding-left: 20px;
+}
+
+.suggestions-list li {
+    font-size: 18px;
+    line-height: 1.8;
+    padding-left: 40px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Custom icons for each list item */
+.icon {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    font-size: 26px;
+    color: #8B0000; /* Harvard Crimson color */
+}
+
+/* Bold the strong elements */
+.suggestions-list li strong {
+    font-weight: bold;
+}
+
+/* Add hover effect for each list item */
+.suggestions-list li:hover {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding-left: 45px;
+    transition: all 0.3s ease;
+}
+
+/* Styling for the essay */
+.essay {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+/* Highlight the opening phrase */
+.highlight {
+    font-size: 22px;
+    font-weight: bold;
+    color: #8B0000; /* Harvard Crimson */
+}
+
+/* Styling for the source link */
+.source {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.source a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.source a:hover {
+    text-decoration: underline;
+}
+
+/* Spacing and line-height for better readability */
+p {
+    margin-bottom: 20px;
+}
+
+/* Add a subtle hover effect to the source link */
+.source:hover {
+    color: #2c3e50;
+}
+
+/* Prompt box styling */
+.prompt {
+    margin-bottom: 20px;
+}
+
+/* Title for each prompt */
+.prompt-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #8B0000; /* Harvard Crimson */
+    margin-bottom: 10px;
+}
+
+/* Text for each prompt */
+.prompt-text {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Add subtle borders and padding around prompts */
+.prompt {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-left: 5px solid #8B0000;
+    border-radius: 8px;
+}
+
+.prompt-text {
+    margin-top: 10px;
+}
+
+/* Add hover effect for each prompt */
+.prompt:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.3s ease;
+}
+.note-container-princeton {
+    width: 100%;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.note-princeton {
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.note h3 {
+    font-size: 1.5em;
+    color: #0056b3;
+    margin-bottom: 10px;
+}
+
+.tips-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.tips-list li {
+    margin: 10px 0;
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+.tips-list strong {
+    color: #0056b3;
+}
+
+        /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+        /* Remove left and right sidebar for mobile/tablet */
+        .container {
+            flex-direction: column; /* Stack elements vertically */
+            padding: 0 5%;
+        }
+
+        .main-content {
+            flex-basis: 100%; /* Full width for main content */
+            margin-left: -5%; /* Adjust left margin */
+            margin-right: 0;
+        }
+
+        .left-sidebar,
+        .right-sidebar {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        nav {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 5%;
+        }
+
+        .nav-left ul {
+            display: flex;
+            justify-content: space-around;
+            width: 100%; /* Take full width of nav */
+            padding: 10px 0;
+        }
+
+        .search-box {
+            display: none; /* Hide the search input box */
+        }
+
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
+            width: auto;
+            margin-top: 0;
+            margin-right: 25px; /* Add margin to the right nav */
+        }
+
+        .nav-right .search-icon {
+            display: block; /* Show only the search icon on small screens */
+            cursor: pointer;
+        }
+
+        .imp-links a {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        .write-post-container {
+            padding: 15px;
+        }
+
+        .post-input-container textarea {
+            padding-left: 0;
+        }
+
+        .post-input-container button {
+            width: 100%;
+        }
+
+        .user-profile img {
+            width: 35px;
+        }
+
+        .user-profile small {
+            font-size: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+        }
+
+        /* Hide some elements on mobile (optional) */
+        .menu-container {
+            display: none;
+        }
+        /* Media query for tablets (e.g., iPad Mini) */
+@media (max-width: 768px) {
+    .suggestions-box {
+        width: 60%; /* Adjust width for smaller tablets */
+        margin-top: 20%; /* Adjust top margin if needed */
+        margin-left: 4%;
+    }
+}
+    }
+
+    @media (max-width: 480px) {
+        .logo {
+            font-size: 1.2rem;
+        }
+
+        .nav-left ul li img {
+            width: 24px;
+            margin: 0 10px;
+        }
+
+        .post-input-container textarea {
+            font-size: 14px;
+        }
+
+        .write-post-container {
+            padding: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+            margin-right: 15px;
+        }
+
+        .actions button {
+            font-size: 12px;
+        }
+
+        .comments textarea {
+            font-size: 12px;
+        }
+
+        .comments button {
+            font-size: 12px;
+        }
+
+        .post-header h3 {
+            font-size: 14px;
+        }
+
+        .post-header p {
+            font-size: 12px;
+        }
+    }
+    /* Media query for mobile phones */
+@media (max-width: 480px) {
+    .suggestions-box {
+        width: 90%; /* Almost full width for smaller screens */
+        margin-top: 36%; /* Adjust top margin if needed */
+        margin-left: 7%
+    }
+}
+
+/* Media query for very small devices */
+@media (max-width: 360px) {
+    .suggestions-box {
+        width: 95%; /* Full width for very small screens */
+        margin-top: 35%; /* Ensure it remains visible */
+        margin-left: 10%;
+    }
+}
+    
+        
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+     <nav>
+        <div class="nav-left">
+            <div class="logo">UniRec</div>
+            <ul>
+                <li><a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notification) }}"></a></li>
+                 <li><a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + chat) }}"></a></li>
+                <li><a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + reels) }}"></a></li>
+            
+            </ul>
+        </div>
+        <div class="nav-right">
+            <form action="{{ url_for('search') }}" method="POST">
+                <div class="search-box">
+                    <img src="{{ url_for('static', filename='images/' + search) }}">
+                    <input type="text" name="search_query" placeholder="Search..." required>
+                </div>
+            </form>
+            <div class="nav-user-icon online">
+                <img src="{{ url_for('static', filename='images/' + user_profile_pic) }}" alt="Profile Picture" width="50" height="50">
+            </div>   
+        </div>      
+        
+
+    
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="container">
+
+            <div class="left-sidebar">
+                <div class="imp-links">
+                    <a href="{{ url_for('friend_list') }}"><img src="{{ url_for('static', filename='images/' + friends) }}">Friends</a>
+                    <a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + inbox) }}">Chat</a>
+                    <a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notificationbell) }}">Notifications</a>
+                    <a href="{{ url_for('servers') }}"><img src="{{ url_for('static', filename='images/' + group) }}">Servers</a>
+                    <a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + video) }}">Reels</a>
+                    <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/' + webinar) }}">Webinar</a>
+
+                </div>
+
+            </div>
+            
+
+            <!-- Main Content: Video Feed -->
+        <div class="main-content">
+            <div class="main-text-h2">
+                <h2> Scholarship search</h2>
+            </div>
+
+            
+            <div class ="sc-search-row">
+                <span class = "sc-search-icon"><button class = "sc-search-icon" onclick="searchUniversity()">&#128269;</button></span>
+                <input type="text" class="sc-search-box" placeholder="Search by college name" id="university-search" oninput="showSuggestions(this.value)">
+                
+        <div id="suggestions" class="suggestions-box"></div>
+            </div>  
+
+            <h1>Tufts University</h1>
+<img src="{{ url_for('static', filename='images/' + (university_image or tuftsuniversity)) }}" 
+    alt="{{ university_name }} Banner" 
+    style="width: 100%; border-radius: 10px; margin-bottom: 20px;">
+
+<table class="university-table">
+    <thead>
+        <tr>
+            <th>Detail</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Setting</td>
+            <td>Urban</td>
+        </tr>
+        <tr>
+            <td>Out-of-State Tuition & Fees (International Student)</td>
+            <td>$64,000</td>
+        </tr>
+        <tr>
+            <td>In-state Tuition and Fees</td>
+            <td>$64,000</td>
+        </tr>
+        <tr>
+            <td>Undergraduate Enrollment</td>
+            <td>5,200</td>
+        </tr>
+        <tr>
+            <td>Acceptance Rate</td>
+            <td>16.1%</td>
+        </tr>
+        <tr>
+            <td>Visit School Website</td>
+            <td><a href="https://www.tufts.edu" target="_blank">Visit</a></td>
+        </tr>
+        <tr>
+            <td>School Address</td>
+            <td>419 Boston Ave, Medford, MA 02155, USA</td>
+        </tr>
+        <tr>
+            <td>Rankings</td>
+            <td>#30 in National Universities, #23 in Best Value Schools</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 class="title">Tufts University Acceptance Data</h2>
+<table class="university-table">
+    <thead>
+        <tr>
+            <th>Class of</th>
+            <th>Number of Applications Received</th>
+            <th>Number of Students Accepted</th>
+            <th>Tufts University Acceptance Rate</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2027</td>
+            <td>33,000</td>
+            <td>5,300</td>
+            <td>16.1%</td>
+        </tr>
+        <tr>
+            <td>2026</td>
+            <td>34,200</td>
+            <td>5,400</td>
+            <td>15.8%</td>
+        </tr>
+        <tr>
+            <td>2025</td>
+            <td>32,800</td>
+            <td>5,200</td>
+            <td>15.8%</td>
+        </tr>
+        <tr>
+            <td>2024</td>
+            <td>31,200</td>
+            <td>5,000</td>
+            <td>16.0%</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<h2 class="title">Tufts University Financial Aid Principles</h2>
+<p>At Tufts, we believe that cost should never be a barrier to a world-class education. That’s why we are committed to meeting 100% of the demonstrated financial need for all admitted undergraduates, regardless of citizenship status. Our financial aid packages are designed to ensure that students can focus on their studies without the worry of tuition costs.</p>
+<p>Tufts University follows the principle that education should be accessible to all qualified students, and we make the following commitments regarding financial aid:</p>
+<ul>
+    <li><strong>Admission:</strong> Tufts meets 100% of demonstrated financial need for all admitted undergraduate students, regardless of citizenship status. We are committed to providing a pathway for exceptional students from all backgrounds to join the Tufts community.</li>
+    <li><strong>Financial Aid Packages:</strong> Tufts offers a combination of grants, student loans, and work-study funding, ensuring that financial aid recipients can focus on their studies and not on how to pay for their education.</li>
+    <li><strong>No Loans for Low-Income Families:</strong> Students from families with annual incomes under $60,000 typically receive financial aid packages with no student loans, relying on grant aid and work-study funding to meet their needs.</li>
+</ul>
+
+<h2 class="title">Tufts University Financial Aid Principles for International Students</h2>
+<p>At Tufts, we are committed to making education accessible to all qualified students, including international students. While financial aid for international students is limited compared to U.S. citizens, we do offer need-based scholarships and merit-based awards.</p>
+<p>For international students, Tufts offers the following principles regarding financial aid:</p>
+<ul>
+    <li>International students are considered for <strong>need-based financial aid</strong> on a limited basis, with decisions based on academic achievement and financial need.</li>
+    <li>Tufts offers <strong>merit-based scholarships</strong> to exceptional international students, recognizing achievements in academics, leadership, and extracurricular activities.</li>
+    <li>Financial aid packages for international students may include a combination of need-based aid and merit-based scholarships to reduce the burden of tuition costs.</li>
+</ul>
+
+<h2 class="title">Tufts University Cost Overview</h2>
+<table class="university-table">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Cost</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Tuition and Fees</td>
+            <td>$64,000</td>
+        </tr>
+        <tr>
+            <td>Room and Board</td>
+            <td>$18,500</td>
+        </tr>
+        <tr>
+            <td>Books and Personal</td>
+            <td>$3,000</td>
+        </tr>
+        <tr>
+            <td>Total Estimated Cost of Attendance</td>
+            <td>$85,500</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>For financial aid eligibility, Tufts calculates the difference between a family’s Expected Family Contribution (EFC) and the Cost of Attendance (COA). This difference is referred to as the family’s <strong>demonstrated financial need</strong>.</p>
+<p><a href="https://provost.tufts.edu/institutionalresearch/cost-of-attendance/" target="_blank">Net Price Calculator</a></p>
+
+<h2 class="title">Tufts University Signature Scholarships</h2>
+<p>Tufts also offers competitive merit-based scholarships to recognize exceptional academic and extracurricular accomplishments:</p>
+<ul>
+    <li><strong>National Merit Scholarship:</strong> Awarded to students who are National Merit finalists, offering $500 per semester for up to eight semesters of enrollment at Tufts.</li>
+    <li><strong>ROTC Scholarships:</strong> Students participating in Army, Navy, or Air Force ROTC can use scholarships at Tufts, including full-tuition and partial scholarships.</li>
+</ul>
+
+<h2 class="title">Experience Tufts</h2>
+<p>Experience Tufts is a student-led initiative providing funding for students on need-based financial aid, enabling participation in extracurricular activities such as club sports, arts, service trips, and more.</p>
+<p><a href="https://www.tufts.edu" target="_blank">Learn more about Experience Tufts</a></p>
+
+
+<h1 class="title">Tufts University Academic Scores</h1>
+<table class="university-table">
+    <thead>
+        <tr>
+            <th>Test</th>
+            <th>Section</th>
+            <th>Average</th>
+            <th>25th Percentile</th>
+            <th>75th Percentile</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="3">SAT</td>
+            <td>Math</td>
+            <td>740</td>
+            <td>720</td>
+            <td>760</td>
+        </tr>
+        <tr>
+            <td>Reading + Writing</td>
+            <td>730</td>
+            <td>710</td>
+            <td>750</td>
+        </tr>
+        <tr>
+            <td>Composite</td>
+            <td>1470</td>
+            <td>1410</td>
+            <td>1530</td>
+        </tr>
+        <tr>
+            <td>ACT</td>
+            <td>Composite</td>
+            <td>33</td>
+            <td>32</td>
+            <td>34</td>
+        </tr>
+        <tr>
+            <td>GPA</td>
+            <td>Unweighted</td>
+            <td>3.90 - 4.0</td>
+            <td>3.85</td>
+            <td>4.0</td>
+        </tr>
+    </tbody>
+</table>
+
+<h1 class="title">What Tufts Looks for in Applicants</h1>
+<p>Tufts University seeks students who are intellectually playful, globally minded, civically engaged, collaborative, and kind. The admissions process is holistic, focusing on a blend of academic achievement, extracurricular engagement, personal growth, and a demonstrated passion for interdisciplinary learning. Tufts values students who thrive in collaborative environments and contribute meaningfully to their communities.</p>
+
+<h2 class="section-title">Key Qualities Tufts Looks For</h2>
+<ul class="criteria-list">
+    <li><span class="icon">📚</span><strong>Academic Achievement</strong>: Tufts values a strong academic record, including high grades in challenging courses such as AP, IB, or dual-enrollment classes. While they do not report average GPAs, most admitted students are in the top 10% of their graduating class.</li>
+    <li><span class="icon">💬</span><strong>Standardized Test Scores</strong>: Tufts is test-optional but will consider SAT or ACT scores if submitted. The middle 50% ranges for the Class of 2027 are 1460-1540 for the SAT and 33-35 for the ACT.</li>
+    <li><span class="icon">🎓</span><strong>Extracurricular Involvement</strong>: Tufts values students with meaningful extracurricular achievements, particularly in Tier 1 or Tier 2 activities that show leadership, passion, and impact.</li>
+    <li><span class="icon">📝</span><strong>Personal Essays</strong>: Essays are crucial for showcasing your character, intellectual curiosity, and passion for Tufts. Applicants should articulate their specific interest in Tufts and how they embody its values.</li>
+    <li><span class="icon">🌍</span><strong>Recommendation Letters</strong>: Letters from teachers and counselors provide context about your academic strengths, character, and potential. Choose recommenders who know you well and can provide detailed insights.</li>
+</ul>
+
+<h2 class="section-title">Testing and Academic Standards</h2>
+<p>While Tufts is test-optional, submitting strong scores can bolster your application. The middle 50% test score ranges for the Class of 2027 were:</p>
+<ul class="score-list">
+    <li><strong>SAT Composite:</strong> 1460-1540</li>
+    <li><strong>ACT Composite:</strong> 33-35</li>
+</ul>
+<p>Students who perform well on standardized tests are encouraged to submit their scores, but applicants without scores will not be at a disadvantage as Tufts reviews applications holistically.</p>
+
+<h2 class="section-title">What Sets Tufts Apart</h2>
+<p>Tufts seeks students who are adaptable, creative, and eager to engage in interdisciplinary learning. The university emphasizes intellectual curiosity, collaboration, and civic engagement. With three undergraduate schools—the School of Arts and Sciences, the School of Engineering, and the School of the Museum of Fine Arts—Tufts provides a dynamic environment for students to explore diverse interests and make meaningful contributions.</p>
+
+<h2 class="section-title">Tips for Tufts Applicants</h2>
+<ul class="tips-list">
+    <li><strong>Take Challenging Courses</strong>: Build a rigorous academic schedule with a focus on core subjects. Engage in AP, IB, or dual-enrollment courses if available, and prioritize intellectual growth.</li>
+    <li><strong>Write Thoughtful Essays</strong>: Use your essays to highlight your unique voice, interests, and how you align with Tufts’ values. Demonstrate your intellectual curiosity and passion for interdisciplinary learning.</li>
+    <li><strong>Choose Recommenders Wisely</strong>: Select recommenders who know you well and can provide specific examples of your academic and personal strengths.</li>
+    <li><strong>Focus on Impactful Extracurriculars</strong>: Highlight activities that demonstrate leadership, passion, and sustained commitment. Depth of involvement is more significant than the number of activities.</li>
+    <li><strong>Visit and Engage with Tufts</strong>: Attend campus visits, virtual tours, or Jumbo Chats to learn more about Tufts. Demonstrating interest through these opportunities can strengthen your application.</li>
+</ul>
+
+<p>Tufts’ admissions process is designed to identify students who will thrive in its intellectually vibrant, collaborative, and globally minded community. By excelling academically, engaging deeply in extracurriculars, and expressing your authentic self in your application, you can position yourself as a strong candidate for admission.</p>
+
+
+<h1>Tufts Supplemental Prompts for the Class of 2029:</h1>
+
+<div class="prompt">
+    <h2 class="prompt-title">Applicants to the School of Arts & Sciences or the School of Engineering</h2>
+    <p class="prompt-text">Please respond to one of the following three prompts in 200-250 words:</p>
+    <ul class="prompt-list">
+        <li>It’s cool to love learning. What excites your intellectual curiosity and why?</li>
+        <li>How have the environments or experiences of your upbringing – your family, home, neighborhood, or community – shaped the person you are today?</li>
+        <li>Using a specific example or two, tell us about a way that you contributed to building a collaborative and/or inclusive community.</li>
+    </ul>
+</div>
+
+<div class="prompt">
+    <h2 class="prompt-title">Applicants to the School of the Museum of Fine Arts (SMFA) at Tufts</h2>
+    <p class="prompt-text">Please respond to the following prompt in 200-250 words:</p>
+    <p class="prompt-text">Art has the power to disrupt our preconceptions, shape public discourse, and imagine new ways of being in the world. What are the ideas you’d like to explore in your work?</p>
+</div>
+
+<div class="prompt">
+    <h2 class="prompt-title">All Applicants</h2>
+    <p class="prompt-text">In addition, we will ask all applicants to complete this sentence in 100 words or less:</p>
+    <p class="prompt-text"><strong>“I am applying to Tufts because…”</strong></p>
+</div>
+
+<div class="note-container">
+    <div class="note">
+        <h2>Detailed Essay Guidance</h2>
+        <p>For tips and strategies on how to approach Tufts' supplemental prompts, explore the following resources:</p>
+        <ul>
+            <li><a href="https://www.collegeessayguy.com/blog/tufts-university-supplemental-essay" target="_blank">College Essay Guy</a>: Expert advice on crafting compelling essays for Tufts.</li>
+            <li><a href="https://blog.collegevine.com/how-to-write-the-tufts-university-essays" target="_blank">CollegeVine</a>: A detailed breakdown of Tufts’ prompts with example responses.</li>
+            <li><a href="https://nextadmit.com/blog/how-to-write-the-tufts-supplemental-essays/" target="_blank">Next Admit</a>: Insights into showcasing your unique perspective and passion in Tufts' essays.</li>
+        </ul>
+    </div>
+</div>
+
+    
+
+
+        </div>
+        <div class="right-siderbar">
+            <div class = "imp-links">
+                <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/' + homeicon) }}">Home</a>
+                <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/' + profileicon) }}">Profile</a>
+                <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/' + helpersicon) }}">Helpers</a>
+                <a href="#"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>
+                <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>
+                <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/' + courses) }}">Courses</a>
+            </div>
+        </div>
+
+
+        
+
+        
+
+    </div>
+
+
+    <!-- JavaScript for Reactions, Comments, and Sharing -->
+    <script>
+    function toggleMenu(videoId) {
+        var menu = document.getElementById('menu-' + videoId);
+        menu.classList.toggle('show');
+    }
+
+    function deleteVideo(videoId) {
+        if (confirm('Are you sure you want to delete this video?')) {
+            fetch(`/delete_video/${videoId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.status === 200) {
+                    alert('Video deleted!');
+                    window.location.reload(); // Reload the page after deletion
+                } else {
+                    alert('Error deleting video.');
+                }
+            });
+        }
+    }
+
+    function reactPost(videoId, reactionType) {
+        fetch(`/react_video/${videoId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({reaction_type: reactionType}),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const reactionCountElement = document.getElementById(`reaction-count-${videoId}`);
+                reactionCountElement.textContent = `${data.reaction_count} Reactions`;
+            } else {
+                alert('Error adding reaction.');
+            }
+        });
+    }
+
+    function commentPost(videoId) {
+        const commentText = document.getElementById(`comment-text-${videoId}`).value;
+
+        fetch(`/comment_video/${videoId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({comment: commentText}),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Comment added!');
+                location.reload();  // Reload page to show the new comment
+            } else {
+                alert('Error adding comment.');
+            }
+        });
+    }
+
+    function sharePost(videoId) {
+        fetch(`/share_video/${videoId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Post shared!');
+                location.reload();  // Reload page to show the shared post
+            } else {
+                alert('Error sharing post.');
+            }
+        });
+    }
+
+    // List of top 100 universities in the U.S.
+    const universities = [
+        "Harvard University", "Stanford University", "Massachusetts Institute of Technology (MIT)",
+        "California Institute of Technology (Caltech)", "Princeton University", "Texas State University"
+    // Add more universities here...
+    ];
+
+// Function to show suggestions based on user input
+    function showSuggestions(value) {
+        const suggestionBox = document.getElementById("suggestions");
+        suggestionBox.innerHTML = ""; // Clear previous suggestions
+
+        if (value.length === 0) {
+            return; // Exit if input is empty
+        }
+
+    // Filter universities based on input
+        const filteredUniversities = universities.filter(university =>
+            university.toLowerCase().includes(value.toLowerCase())
+            );
+
+    // Display filtered suggestions
+    filteredUniversities.forEach(university => {
+        const div = document.createElement("div");
+        div.className = "suggestion";
+        div.textContent = university;
+        div.onclick = () => selectUniversity(university);
+        suggestionBox.appendChild(div);
+    });
+}
+
+// Function to populate input field when suggestion is clicked
+function selectUniversity(university) {
+    document.getElementById("university-search").value = university;
+    document.getElementById("suggestions").innerHTML = ""; // Clear suggestions
+}
+
+function searchUniversity() {
+        const searchInput = document.getElementById("university-search").value;
+        const formattedName = searchInput.replace(/\s+/g, '').toLowerCase();
+        window.location.href = formattedName + ".html";
+    }
+
+    </script>
+
+</body>
+</html>

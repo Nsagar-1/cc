@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Course - CampusConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-group input[type="file"] {
+            padding: 5px;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Upload Course</h2>
+    
+    <form action="{{ url_for('upload_course_video') }}" method="post" enctype="multipart/form-data">
+        <!-- Course Information -->
+        <div class="form-group">
+            <label for="course-title">Course Title</label>
+            <input type="text" id="course-title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="course-description">Course Description</label>
+            <textarea id="course-description" name="description" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="course-thumbnail">Upload Course Thumbnail</label>
+            <input type="file" id="course-thumbnail" name="thumbnail" accept="image/*">
+        </div>
+        <div class="form-group">
+            <label for="course-category">Category</label>
+            <select id="course-category" name="category" required>
+                <option value="">Select Category</option>
+                <option value="Science">Science</option>
+                <option value="Math">Math</option>
+                <option value="Technology">Technology</option>
+                <!-- Add more categories as needed -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="course_length">Course Length (HH:MM:SS)</label>
+            <input type="text" name="course_length" id="course_length" class="form-control" 
+                   placeholder="Example: 02:30:15" required>
+        </div>
+
+        <!-- Course Videos -->
+        <h3 class="section-title">Course Videos</h3>
+        <div class="form-group">
+            <label for="video-title">Video Title</label>
+            <input type="text" id="video-title" name="video_title[]" required>
+        </div>
+        <div class="form-group">
+            <label for="video-description">Video Description</label>
+            <textarea id="video-description" name="video_description[]" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="video-file">Upload Video</label>
+            <input type="file" id="video-file" name="video_file[]" accept="video/*" required>
+        </div>
+
+        <!-- Course Resources -->
+        <h3 class="section-title">Course Resources</h3>
+        <div class="form-group">
+            <label for="resource-file">Upload Resources (Image, Video, or PDF)</label>
+            <input type="file" id="resource-file" name="resource_file[]" accept="image/*,video/*,application/pdf" multiple>
+        </div>
+
+        <!-- Course Assignments -->
+        <h3 class="section-title">Course Assignments</h3>
+        <div class="form-group">
+            <label for="assignment-file">Upload Assignments (Image, Video, or PDF)</label>
+            <input type="file" id="assignment-file" name="assignment_file[]" accept="image/*,video/*,application/pdf" multiple>
+        </div>
+
+        <!-- Instructor Info -->
+        <h3 class="section-title">Instructor Information</h3>
+        <div class="form-group">
+            <label for="instructor-name">Instructor Name</label>
+            <input type="text" id="instructor-name" name="instructor_name[]">
+        </div>
+        <div class="form-group">
+            <label for="instructor-profile-link">Profile Link</label>
+            <input type="text" id="instructor-profile-link" name="instructor_profile_link[]">
+        </div>
+        <div class="form-group">
+            <label for="instructor-fb-link">Facebook Link</label>
+            <input type="text" id="instructor-fb-link" name="instructor_fb_link[]">
+        </div>
+        <div class="form-group">
+            <label for="instructor-linkedin-link">LinkedIn Link</label>
+            <input type="text" id="instructor-linkedin-link" name="instructor_linkedin_link[]">
+        </div>
+        <div class="form-group">
+            <label for="instructor-photo">Upload Instructor Photo</label>
+            <input type="file" id="instructor-photo" name="instructor_photo[]" accept="image/*" multiple>
+        </div>
+
+        <button type="submit">Submit Course</button>
+    </form>
+</div>
+
+</body>
+</html>

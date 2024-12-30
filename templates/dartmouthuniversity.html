@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Recommendation Feed</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #efefef;
+            margin: 0;
+            padding: 0;
+        }
+        
+        nav{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background : #1876f2;
+            padding: 5px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo{
+            color: #efefef;
+             display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.5rem;
+
+        }
+        .nav-left, .nav-right{
+            display: flex;
+            align-items: center;
+        }
+        .nav-left ul li{
+            list-style: none;
+            display: inline-block;
+        }
+        .nav-left ul li img{
+            width: 28px;
+            margin: 0 15px;
+        }
+        .nav-user-login img{
+            width: 40px;
+            border-radius: 50%;
+            cursor:pointer;
+        }
+        .nav-user-icon{
+            margin-left: 30px;
+            width: 10%;
+            height: 10%
+
+        }
+        .search-box{
+            background: #efefef;
+            width: 80%;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+        }
+        .search-box img{
+            width: 18px;
+        }
+        .search-box input{
+            width: 100%;
+            background: transparent;
+            padding: 10px;
+            outline: none;
+            border: 0;
+        }
+        .online{
+            position: relative;
+
+        }
+        .online::after{
+            content: '';
+            width: 7px;
+            height: 7px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background-color: #41db51;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .container{
+            display: flex;
+            justify-content: space-between;
+            padding: 13px 5%;
+
+        }
+        .left-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+        }
+        .right-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+
+        }
+        .main-content{
+            flex-basis: 40%;
+            height : 40%;
+            margin-right : 5%;
+
+        }
+        .sc-search-row{
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+        .sc-search-icon{
+            font-size: 20px;
+            margin-right: 10px;
+            color: #666;
+
+        }
+        .sc-search-box{
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .suggestions-box {
+          position: absolute;
+          background-color: #fff;
+          width: 40%; /* Adjust width to match input */
+          max-height: 150px;
+          overflow-y: auto;
+          z-index: 1;
+          margin-top: 12%;
+          border-radius: 10px;
+          margin-left: 0;
+        }
+
+        .suggestion {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .suggestion:hover{
+            background-color: #f0f0f0;
+        }
+    
+
+        .imp-links a{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            color: #626262;
+            width: fit-content;
+        }
+        .imp-links a img{
+            width: 25px;
+            margin-right: 15px;
+        }
+        h3{
+            margin: 10px;
+            color: #cbdffa;
+            
+        }
+
+        .write-post-container{
+            width: 100%;
+            background : #fff;
+            border-radius : 6px;
+            padding : 20px;
+            color: #626262;
+        }
+        .user-profile{
+            display: flex; 
+            align-items: center;
+        }
+        .user-profile img{
+            width: 45px;
+            border-radius : 50%;
+            margin-right: 10px;
+        }
+        .user-profile p{
+            margin-bottom : -5px;
+
+        }
+        .user-profile small{
+            font-size: 12px;
+
+        }
+        .post-input-container{
+            padding-left : 55px;
+            padding-top : 20px;
+        }
+        .post-input-container textarea{
+            width : 100%;
+            border : 0;
+            outline : 0;
+            border-bottom : 1px solid #ccc;
+            background: transparent;
+            resize: none;
+        }
+        .add-post-links{
+            display : flex;
+            margin-top: 10px;
+        }
+        .add-post-links button{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            color : #626262;
+            margin-right: 30px;
+            font-size: 13px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding : 0;
+        }
+        .add-post-links button img{
+            width : 20px;
+            margin-right : 10px;
+        }
+
+        h2{
+            color: black;
+            margin-left: 10px;
+        }
+        h1{
+            color: black;
+            margin-left: 10px;
+        }
+
+        /* Table styles */
+.university-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Table header */
+.university-table thead {
+    background-color: #8B0000; /* Harvard Crimson color */
+    color: #fff;
+}
+
+.university-table th {
+    padding: 12px;
+    text-align: left;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Table rows */
+.university-table tbody tr {
+    background-color: #ecf0f1;
+    border-bottom: 1px solid #ddd;
+}
+
+.university-table td {
+    padding: 12px;
+    font-size: 14px;
+}
+
+/* Hover effect for table rows */
+.university-table tbody tr:hover {
+    background-color: #bdc3c7;
+}
+
+/* Links in the table */
+.university-table a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.university-table a:hover {
+    text-decoration: underline;
+}
+
+/* Title */
+.title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+/* Bullet points list styling */
+.criteria-list {
+    list-style: none;
+    padding-left: 20px;
+}
+
+.criteria-list li {
+    font-size: 18px;
+    line-height: 1.8;
+    padding-left: 30px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+/* Custom icons for each list item */
+.icon {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    font-size: 24px;
+    color: #8B0000; /* Harvard Crimson color */
+}
+
+/* Bold the strong elements */
+.criteria-list li strong {
+    font-weight: bold;
+}
+
+/* Add hover effect for each list item */
+.criteria-list li:hover {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding-left: 35px;
+    transition: all 0.3s ease;
+}
+
+/* Bullet points list styling */
+.suggestions-list {
+    list-style: none;
+    padding-left: 20px;
+}
+
+.suggestions-list li {
+    font-size: 18px;
+    line-height: 1.8;
+    padding-left: 40px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Custom icons for each list item */
+.icon {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    font-size: 26px;
+    color: #8B0000; /* Harvard Crimson color */
+}
+
+/* Bold the strong elements */
+.suggestions-list li strong {
+    font-weight: bold;
+}
+
+/* Add hover effect for each list item */
+.suggestions-list li:hover {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding-left: 45px;
+    transition: all 0.3s ease;
+}
+
+/* Styling for the essay */
+.essay {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+/* Highlight the opening phrase */
+.highlight {
+    font-size: 22px;
+    font-weight: bold;
+    color: #8B0000; /* Harvard Crimson */
+}
+
+/* Styling for the source link */
+.source {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.source a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.source a:hover {
+    text-decoration: underline;
+}
+
+/* Spacing and line-height for better readability */
+p {
+    margin-bottom: 20px;
+}
+
+/* Add a subtle hover effect to the source link */
+.source:hover {
+    color: #2c3e50;
+}
+
+/* Prompt box styling */
+.prompt {
+    margin-bottom: 20px;
+}
+
+/* Title for each prompt */
+.prompt-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #8B0000; /* Harvard Crimson */
+    margin-bottom: 10px;
+}
+
+/* Text for each prompt */
+.prompt-text {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Add subtle borders and padding around prompts */
+.prompt {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-left: 5px solid #8B0000;
+    border-radius: 8px;
+}
+
+.prompt-text {
+    margin-top: 10px;
+}
+
+/* Add hover effect for each prompt */
+.prompt:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.3s ease;
+}
+.note-container-princeton {
+    width: 100%;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.note-princeton {
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.note h3 {
+    font-size: 1.5em;
+    color: #0056b3;
+    margin-bottom: 10px;
+}
+
+.tips-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.tips-list li {
+    margin: 10px 0;
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+.tips-list strong {
+    color: #0056b3;
+}
+
+        /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+        /* Remove left and right sidebar for mobile/tablet */
+        .container {
+            flex-direction: column; /* Stack elements vertically */
+            padding: 0 5%;
+        }
+
+        .main-content {
+            flex-basis: 100%; /* Full width for main content */
+            margin-left: -5%; /* Adjust left margin */
+            margin-right: 0;
+        }
+
+        .left-sidebar,
+        .right-sidebar {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        nav {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 5%;
+        }
+
+        .nav-left ul {
+            display: flex;
+            justify-content: space-around;
+            width: 100%; /* Take full width of nav */
+            padding: 10px 0;
+        }
+
+        .search-box {
+            display: none; /* Hide the search input box */
+        }
+
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
+            width: auto;
+            margin-top: 0;
+            margin-right: 25px; /* Add margin to the right nav */
+        }
+
+        .nav-right .search-icon {
+            display: block; /* Show only the search icon on small screens */
+            cursor: pointer;
+        }
+
+        .imp-links a {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        .write-post-container {
+            padding: 15px;
+        }
+
+        .post-input-container textarea {
+            padding-left: 0;
+        }
+
+        .post-input-container button {
+            width: 100%;
+        }
+
+        .user-profile img {
+            width: 35px;
+        }
+
+        .user-profile small {
+            font-size: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+        }
+
+        /* Hide some elements on mobile (optional) */
+        .menu-container {
+            display: none;
+        }
+        /* Media query for tablets (e.g., iPad Mini) */
+@media (max-width: 768px) {
+    .suggestions-box {
+        width: 60%; /* Adjust width for smaller tablets */
+        margin-top: 20%; /* Adjust top margin if needed */
+        margin-left: 4%;
+    }
+}
+    }
+
+    @media (max-width: 480px) {
+        .logo {
+            font-size: 1.2rem;
+        }
+
+        .nav-left ul li img {
+            width: 24px;
+            margin: 0 10px;
+        }
+
+        .post-input-container textarea {
+            font-size: 14px;
+        }
+
+        .write-post-container {
+            padding: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+            margin-right: 15px;
+        }
+
+        .actions button {
+            font-size: 12px;
+        }
+
+        .comments textarea {
+            font-size: 12px;
+        }
+
+        .comments button {
+            font-size: 12px;
+        }
+
+        .post-header h3 {
+            font-size: 14px;
+        }
+
+        .post-header p {
+            font-size: 12px;
+        }
+    }
+    /* Media query for mobile phones */
+@media (max-width: 480px) {
+    .suggestions-box {
+        width: 90%; /* Almost full width for smaller screens */
+        margin-top: 36%; /* Adjust top margin if needed */
+        margin-left: 7%
+    }
+}
+
+/* Media query for very small devices */
+@media (max-width: 360px) {
+    .suggestions-box {
+        width: 95%; /* Full width for very small screens */
+        margin-top: 35%; /* Ensure it remains visible */
+        margin-left: 10%;
+    }
+}
+    
+        
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+     <nav>
+        <div class="nav-left">
+            <div class="logo">UniRec</div>
+            <ul>
+                <li><a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notification) }}"></a></li>
+                 <li><a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + chat) }}"></a></li>
+                <li><a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + reels) }}"></a></li>
+            
+            </ul>
+        </div>
+        <div class="nav-right">
+            <form action="{{ url_for('search') }}" method="POST">
+                <div class="search-box">
+                    <img src="{{ url_for('static', filename='images/' + search) }}">
+                    <input type="text" name="search_query" placeholder="Search..." required>
+                </div>
+            </form>
+            <div class="nav-user-icon online">
+                <img src="{{ url_for('static', filename='images/' + user_profile_pic) }}" alt="Profile Picture" width="50" height="50">
+            </div>   
+        </div>      
+        
+
+    
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="container">
+
+            <div class="left-sidebar">
+                <div class="imp-links">
+                    <a href="{{ url_for('friend_list') }}"><img src="{{ url_for('static', filename='images/' + friends) }}">Friends</a>
+                    <a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + inbox) }}">Chat</a>
+                    <a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notificationbell) }}">Notifications</a>
+                    <a href="{{ url_for('servers') }}"><img src="{{ url_for('static', filename='images/' + group) }}">Servers</a>
+                    <a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + video) }}">Reels</a>
+                    <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/' + webinar) }}">Webinar</a>
+
+                </div>
+
+            </div>
+            
+
+            <!-- Main Content: Video Feed -->
+        <div class="main-content">
+            <div class="main-text-h2">
+                <h2> Scholarship search</h2>
+            </div>
+
+            
+            <div class ="sc-search-row">
+                <span class = "sc-search-icon"><button class = "sc-search-icon" onclick="searchUniversity()">&#128269;</button></span>
+                <input type="text" class="sc-search-box" placeholder="Search by college name" id="university-search" oninput="showSuggestions(this.value)">
+                
+        <div id="suggestions" class="suggestions-box"></div>
+            </div>  
+
+            <h1>Dartmouth College</h1>
+<img src="{{ url_for('static', filename='images/' + (university_image or 'dartmouthcollege')) }}" 
+     alt="{{ university_name }} Banner" 
+     style="width: 100%; border-radius: 10px; margin-bottom: 20px;">
+<table class="university-table">
+    <thead>
+        <tr>
+            <th>Detail</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Setting</td>
+            <td>Rural</td>
+        </tr>
+        <tr>
+            <td>Out-of-State Tuition & Fees (International Student)</td>
+            <td>$64,700</td>
+        </tr>
+        <tr>
+            <td>In-state Tuition and Fees</td>
+            <td>$64,700</td>
+        </tr>
+        <tr>
+            <td>Undergraduate Enrollment</td>
+            <td>4,556</td>
+        </tr>
+        <tr>
+            <td>Acceptance Rate</td>
+            <td>6.2%</td>
+        </tr>
+        <tr>
+            <td>Visit School Website</td>
+            <td><a href="https://home.dartmouth.edu" target="_blank">Visit</a></td>
+        </tr>
+        <tr>
+            <td>School Address</td>
+            <td>Hanover, NH 03755, USA</td>
+        </tr>
+        <tr>
+            <td>Rankings</td>
+            <td>#12 in National Universities, #7 in Best Value Schools</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 class="title">Dartmouth College Acceptance Data</h2>
+<table class="university-table">
+    <thead>
+        <tr>
+            <th>Class of</th>
+            <th>Number of Applications Received</th>
+            <th>Number of Students Accepted</th>
+            <th>Dartmouth College Acceptance Rate</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2027</td>
+            <td>28,841</td>
+            <td>1,796</td>
+            <td>6.2%</td>
+        </tr>
+        <tr>
+            <td>2026</td>
+            <td>28,336</td>
+            <td>1,768</td>
+            <td>6.2%</td>
+        </tr>
+        <tr>
+            <td>2025</td>
+            <td>27,299</td>
+            <td>1,749</td>
+            <td>6.4%</td>
+        </tr>
+        <tr>
+            <td>2024</td>
+            <td>21,394</td>
+            <td>1,881</td>
+            <td>8.8%</td>
+        </tr>
+    </tbody>
+</table>
+
+            
+
+<h2 class="title">Dartmouth College Financial Aid Principles</h2>
+<p>When awarding aid, Dartmouth follows these principles:</p>
+<ul>
+    <li>Dartmouth offers <strong>zero parent contribution</strong> and <strong>no loans</strong> for families with annual incomes below $125,000, provided their assets are typical for this income range. This ensures that students from low- to middle-income backgrounds can afford a Dartmouth education.</li>
+    <li>Students from these families are expected to contribute to their education through summer or leave-term earnings, part-time work during the school year, and/or personal savings. The full financial need is met without student loans, though loans are available upon request.</li>
+    <li>Families with annual incomes above $125,000 are still eligible for need-based scholarships. Dartmouth reviews each application individually, and families earning above this threshold may still receive scholarship assistance.</li>
+    <li><strong>No expectation for student loans:</strong> Students who qualify for need-based financial aid will not be expected to borrow loans as part of their aid package. Aid is provided through employment and scholarships/grants.</li>
+</ul>
+
+<p>Students and parents may choose to borrow loans to cover the calculated family contribution or additional expenses such as health insurance or a computer.</p>
+
+<p>For a personalized estimate of financial aid, visit Dartmouth's <a href="https://financialaid.dartmouth.edu/cost-attendance/net-price-calculator" target="_blank">Net Price Calculator</a>.</p>
+
+<h2 class="title">Dartmouth College Financial Aid Highlights</h2>
+<table class="university-table">
+    <thead>
+        <tr>
+            <th>Income Level</th>
+            <th>Financial Aid Support</th>
+            <th>Parent Contribution</th>
+            <th>Loan Inclusion</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>$0–125,000</td>
+            <td>Full need met</td>
+            <td>None</td>
+            <td>No loans</td>
+        </tr>
+        <tr>
+            <td>Above $125,000</td>
+            <td>Scholarship consideration available</td>
+            <td>Varies based on family financial profile</td>
+            <td>No expectation, but optional</td>
+        </tr>
+    </tbody>
+</table>
+
+<h1 class="title">Dartmouth College Academic Scores</h1>
+<table class="university-table">
+    <thead>
+        <tr>
+            <th>Test</th>
+            <th>Section</th>
+            <th>Average</th>
+            <th>25th Percentile</th>
+            <th>75th Percentile</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="3">SAT</td>
+            <td>Math</td>
+            <td>750</td>
+            <td>730</td>
+            <td>790</td>
+        </tr>
+        <tr>
+            <td>Reading + Writing</td>
+            <td>740</td>
+            <td>710</td>
+            <td>770</td>
+        </tr>
+        <tr>
+            <td>Composite</td>
+            <td>1490</td>
+            <td>1440</td>
+            <td>1560</td>
+        </tr>
+        <tr>
+            <td>ACT</td>
+            <td>Composite</td>
+            <td>33</td>
+            <td>32</td>
+            <td>35</td>
+        </tr>
+        <tr>
+            <td>GPA</td>
+            <td>Unweighted</td>
+            <td>3.9 - 4.0</td>
+            <td>3.85</td>
+            <td>4.0</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<h1 class="title">What Dartmouth Looks for in Applicants</h1>
+<p>Dartmouth College seeks applicants who demonstrate strong academic capabilities, leadership, and active community engagement. The admissions process evaluates students holistically, considering multiple factors beyond grades and test scores. The main questions guiding Dartmouth’s selection process are: <strong>“Who will thrive at Dartmouth?”</strong> and <strong>“Who will contribute meaningfully to our community?”</strong></p>
+
+<h2 class="section-title">Key Qualities Dartmouth Looks For</h2>
+<ul class="criteria-list">
+    <li><span class="icon">📚</span><strong>Academic Excellence</strong>: The high school transcript is crucial, showing a track record of rigorous courses and strong performance. Dartmouth values applicants who challenge themselves academically.</li>
+    <li><span class="icon">💬</span><strong>Teacher and Counselor Recommendations</strong>: Recommendations provide context about a student’s intellectual curiosity, character, and interaction with peers. Select teachers who know you well and can speak to your strengths.</li>
+    <li><span class="icon">🎓</span><strong>Leadership and Engagement</strong>: Applicants should showcase leadership roles and active participation in meaningful activities that demonstrate commitment and impact.</li>
+    <li><span class="icon">📝</span><strong>Personal Essays</strong>: Essays should be genuine, offering a window into your experiences, motivations, and aspirations. Dartmouth values authentic storytelling that highlights personal voice.</li>
+    <li><span class="icon">🌍</span><strong>Resilience and Adaptability</strong>: The college seeks students who have overcome challenges and can reflect on growth and resilience.</li>
+</ul>
+
+<h2 class="section-title">Standardized Test Scores</h2>
+<p>Dartmouth considers test scores within the context of the applicant's full profile. While there are no strict score cutoffs, the middle 50% range for admitted students is:</p>
+<ul class="score-list">
+    <li><strong>SAT Composite:</strong> 1440–1560</li>
+    <li><strong>ACT Composite:</strong> 32–35</li>
+</ul>
+<p>Scores below these ranges do not disqualify applicants, as Dartmouth evaluates academic readiness alongside a student’s full application and unique context.</p>
+
+<h2 class="section-title">Evaluating Applications</h2>
+<p>The admissions committee, made up of experienced officers and faculty members, assesses applications to find students with exceptional potential. Each application is reviewed to understand the student’s achievements and potential contributions. Factors such as access to AP/IB courses and how students took advantage of available resources are taken into account.</p>
+
+<h2 class="section-title">Tips for Dartmouth Applicants</h2>
+<ul class="tips-list">
+    <li><strong>Select Recommenders Thoughtfully</strong>: Choose teachers who can speak to your academic and personal qualities.</li>
+    <li><strong>Be Authentic in Your Essays</strong>: Showcase your true voice and personal experiences.</li>
+    <li><strong>Highlight Leadership and Involvement</strong>: Emphasize long-term dedication to activities that matter to you.</li>
+    <li><strong>Demonstrate Academic Passion</strong>: Engage deeply with subjects of interest to reflect intellectual curiosity.</li>
+</ul>
+
+<p>Dartmouth seeks students ready to excel academically and contribute positively to its vibrant community. The admissions process values each aspect of the application, striving to find those who will thrive and make meaningful contributions both at Dartmouth and beyond.</p>
+
+
+<h1 class="title">Dartmouth's Supplemental Essay Prompts</h1>
+
+<div class="prompt">
+    <h2 class="prompt-title">Prompt #1: Why Dartmouth?</h2>
+    <p class="prompt-text">
+        As you seek admission to Dartmouth's Class of 2029, what aspects of the college's academic program, community, and/or campus environment attract your interest? How is Dartmouth a good fit for you? (100 words or fewer)
+    </p>
+</div>
+
+<div class="prompt">
+    <h2 class="prompt-title">Prompt #2: Personal Reflection (Choose One)</h2>
+    <p class="prompt-text">
+        Please respond to one of the following prompts in 250 words or fewer:
+    </p>
+    <ol class="essay-list">
+        <li><strong></strong> There is a Quaker saying: Let your life speak. Describe the environment in which you were raised and the impact it has had on the person you are today.</li>
+        <li><strong></strong> "Be yourself," Oscar Wilde advised. "Everyone else is taken." Introduce yourself.</li>
+    </ol>
+</div>
+
+<div class="prompt">
+    <h2 class="prompt-title">Prompt #3: Self-Expression (Choose One)</h2>
+    <p class="prompt-text">
+        Please respond to one of the following prompts in 250 words or fewer:
+    </p>
+    <ol class="essay-list">
+        <li><strong></strong> What excites you?</li>
+        <li><strong></strong> Labor leader and civil rights activist Dolores Huerta recommended a life of purpose. "We must use our lives to make the world a better place to live, not just to acquire things," she said. "That is what we are put on the earth for." In what ways do you hope to make—or are you already making—an impact? Why? How?</li>
+        <li><strong></strong> In "Oh, The Thinks You Can Think," Dr. Seuss invites us to "Think and wonder. Wonder and think." Imagine your anticipated academic major: How does that course of study sync with Dr. Seuss's advice to you?</li>
+        <li><strong></strong> The social and family interactions of wild chimpanzees have been the focus of Dame Jane Goodall's research for decades. Her understanding of animal behavior prompted the English primatologist to see a lesson for human communities as well: "Change happens by listening and then starting a dialogue with the people who are doing something you don't believe is right." Channel Dame Goodall: Tell us about a moment when you engaged in a difficult conversation or encountered someone with an opinion or perspective that was different from your own. How did you find common ground?</li>
+        <li><strong></strong> Celebrate your nerdy side.</li>
+        <li><strong></strong> "It's not easy being green…" was the frequent refrain of Kermit the Frog. How has difference been a part of your life, and how have you embraced it as part of your identity, outlook, or sense of purpose?</li>
+        <li><strong></strong> Buddy Teevens '79 was a legendary and much-beloved coach at Dartmouth. He often told parents: "Your son will be a great football player when it's football time, a great student when it's academic time, and a great person all of the time." If Coach Teevens had said that to you, what would it mean to be "a great person"?</li>
+    </ol>
+</div>
+
+<div class="note-container">
+    <div class="note">
+        <h2>Detailed Essay Guidance</h2>
+        <p>For comprehensive insights on how to approach Dartmouth’s supplemental essay prompts, visit these links. These resources offers detailed strategies, example responses, and tips tailored to each prompt, helping you craft responses that align with Princeton's values.</p>
+        <p>Check out the guide on the <a href="https://www.collegeessayguy.com/blog/dartmouth-supplemental-essay">College Essay Guy website</a> for more information.</p>
+
+<p>For additional essay-writing tips, visit <a href="https://blog.collegevine.com/how-to-write-the-dartmouth-college-essays">CollegeVine's guide on writing Princeton University essays</a>.</p>
+
+<p>Learn more about writing Dartmouth’s supplemental essays by reading this helpful article on <a href="https://nextadmit.com/blog/how-to-write-the-yale-supplemental-essays/">Next Admit's blog</a>.</p>
+
+    </div>
+</div>
+
+
+        </div>
+        <div class="right-siderbar">
+            <div class = "imp-links">
+                <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/' + homeicon) }}">Home</a>
+                <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/' + profileicon) }}">Profile</a>
+                <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/' + helpersicon) }}">Helpers</a>
+                <a href="#"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>
+                <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>
+                <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/' + courses) }}">Courses</a>
+            </div>
+        </div>
+
+        
+
+        
+
+    </div>
+
+
+    <!-- JavaScript for Reactions, Comments, and Sharing -->
+    <script>
+    function toggleMenu(videoId) {
+        var menu = document.getElementById('menu-' + videoId);
+        menu.classList.toggle('show');
+    }
+
+    function deleteVideo(videoId) {
+        if (confirm('Are you sure you want to delete this video?')) {
+            fetch(`/delete_video/${videoId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.status === 200) {
+                    alert('Video deleted!');
+                    window.location.reload(); // Reload the page after deletion
+                } else {
+                    alert('Error deleting video.');
+                }
+            });
+        }
+    }
+
+    function reactPost(videoId, reactionType) {
+        fetch(`/react_video/${videoId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({reaction_type: reactionType}),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const reactionCountElement = document.getElementById(`reaction-count-${videoId}`);
+                reactionCountElement.textContent = `${data.reaction_count} Reactions`;
+            } else {
+                alert('Error adding reaction.');
+            }
+        });
+    }
+
+    function commentPost(videoId) {
+        const commentText = document.getElementById(`comment-text-${videoId}`).value;
+
+        fetch(`/comment_video/${videoId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({comment: commentText}),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Comment added!');
+                location.reload();  // Reload page to show the new comment
+            } else {
+                alert('Error adding comment.');
+            }
+        });
+    }
+
+    function sharePost(videoId) {
+        fetch(`/share_video/${videoId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Post shared!');
+                location.reload();  // Reload page to show the shared post
+            } else {
+                alert('Error sharing post.');
+            }
+        });
+    }
+
+    // List of top 100 universities in the U.S.
+    const universities = [
+        "Harvard University", "Stanford University", "Massachusetts Institute of Technology (MIT)",
+        "California Institute of Technology (Caltech)", "Princeton University", "Texas State University"
+    // Add more universities here...
+    ];
+
+// Function to show suggestions based on user input
+    function showSuggestions(value) {
+        const suggestionBox = document.getElementById("suggestions");
+        suggestionBox.innerHTML = ""; // Clear previous suggestions
+
+        if (value.length === 0) {
+            return; // Exit if input is empty
+        }
+
+    // Filter universities based on input
+        const filteredUniversities = universities.filter(university =>
+            university.toLowerCase().includes(value.toLowerCase())
+            );
+
+    // Display filtered suggestions
+    filteredUniversities.forEach(university => {
+        const div = document.createElement("div");
+        div.className = "suggestion";
+        div.textContent = university;
+        div.onclick = () => selectUniversity(university);
+        suggestionBox.appendChild(div);
+    });
+}
+
+// Function to populate input field when suggestion is clicked
+function selectUniversity(university) {
+    document.getElementById("university-search").value = university;
+    document.getElementById("suggestions").innerHTML = ""; // Clear suggestions
+}
+
+function searchUniversity() {
+        const searchInput = document.getElementById("university-search").value;
+        const formattedName = searchInput.replace(/\s+/g, '').toLowerCase();
+        window.location.href = formattedName + ".html";
+    }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Created Courses - CampusConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container-1 {
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #007bff;
+        }
+        .course-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 0;
+            list-style: none;
+        }
+        .course-card {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .course-card:hover {
+            transform: translateY(-5px);
+        }
+        .course-thumbnail {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .course-info {
+            padding: 15px;
+        }
+        .course-info h3 {
+            margin: 0 0 10px;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .course-info p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .course-info .category {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 10px;
+        }
+        .course-info .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .course-info .actions a {
+            text-decoration: none;
+            color: #007bff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #007bff;
+            transition: background 0.2s;
+            font-size: 0.9em;
+        }
+        .course-info .actions a:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .course-info .actions .delete-link {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        .course-info .actions .delete-link:hover {
+            background-color: #dc3545;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-q">
+    <h2>My Created Courses</h2>
+    {% if made_courses %}
+        <ul class="course-list">
+            {% for course in made_courses %}
+                <li class="course-card">
+                    <img src="{{ url_for('static', filename='courses_thumbnail/' + course.thumbnail) }}" alt="{{ course.title }}" class="course-thumbnail">
+                    <div class="course-info">
+                        <h3>
+                            <a href="{{ url_for('view_course', slug=course.slug) }}">{{ course.title }}</a>
+                        </h3>
+                        <p class="category"><strong>Category:</strong> {{ course.category }}</p>
+                        <p><strong>Description:</strong> {{ course.description | truncate(100) }}</p>
+                        <div class="actions">
+                            <a href="{{ url_for('edit_course', slug=course.slug) }}" title="Edit Course" class="edit-link">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form action="{{ url_for('delete_course', slug=course.slug) }}" method="post" style="display: inline;">
+                                <button type="submit" class="delete-link" onclick="return confirm('Are you sure you want to delete this course?');">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </form>
+                            
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p style="text-align: center; color: #777;">You have not created any courses yet.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

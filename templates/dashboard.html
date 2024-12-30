@@ -1,0 +1,754 @@
+<!doctype html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+       
+/* Button Styles */
+/* General Styling for Bottom Navigation Bar */
+.bottom-bar {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid #34495e;
+}
+
+/* Individual Link Styling */
+.nav-link {
+    text-decoration: none;
+    color: #ecf0f1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #1abc9c;
+    transform: scale(1.1);
+}
+
+/* Icon Styling */
+.nav-link .icon {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+/* Label Styling */
+.nav-link .label {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Input Fields */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+button {
+    background-color: #0066ff; /* Bright blue */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 25px;
+    margin-left: 20px;
+    margin-top: 20px;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background-color: #0052cc; /* Slightly darker blue */
+    transform: scale(1.05);
+}
+
+button:active {
+    background-color: #003d99; /* Dark blue */
+    transform: scale(1);
+}
+
+/* Card Style for Sections */
+.section {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section h2 {
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+/* Typography */
+body {
+    font-family: 'Arial', sans-serif;
+    color: #555;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+}
+
+p, li {
+    font-size: 14px;
+}
+        nav{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background : #1876f2;
+            padding: 5px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo{
+            color: #efefef;
+             display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.5rem;
+
+        }
+        .nav-left, .nav-right{
+            display: flex;
+            align-items: center;
+            width: 40%;
+        }
+        .nav-left ul li{
+            list-style: none;
+            display: inline-block;
+        }
+        .nav-left ul li img{
+            width: 28px;
+            margin: 0 15px;
+        }
+        .nav-user-login img{
+            width: 40px;
+            border-radius: 50%;
+            cursor:pointer;
+        }
+        .nav-user-icon{
+            margin-left: 30px;
+            width: 10%;
+            height: 10%
+
+        }
+        .search-box{
+            background: #efefef;
+            width: 80%;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+        }
+        .search-box img{
+            width: 18px;
+        }
+        .search-box input{
+            width: 100%;
+            background: transparent;
+            padding: 10px;
+            outline: none;
+            border: 0;
+        }
+        .online{
+            position: relative;
+
+        }
+        .online::after{
+            content: '';
+            width: 7px;
+            height: 7px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background-color: #41db51;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .container{
+            display: flex;
+            justify-content: space-between;
+            padding: 13px 5%;
+
+        }
+        .left-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+        }
+        .right-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+
+        }
+        .main-content{
+            flex-basis: 40%;
+            height : 40%;
+            margin-right : 5%;
+
+        }
+        .imp-links a{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            color: #626262;
+            width: fit-content;
+        }
+        .imp-links a img{
+            width: 25px;
+            margin-right: 15px;
+        }
+        h3{
+            margin: 10px;
+            color: #cbdffa;
+            
+        }
+
+    .write-post-container {
+        width: 100%;
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .write-post-container:hover {
+        transform: translateY(-5px);
+    }
+
+    .post-input-container textarea {
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+        outline: none;
+        resize: none;
+        background: #f9f9f9;
+        transition: border 0.3s ease;
+    }
+
+    
+
+
+        .user-profile{
+            display: flex; 
+            align-items: center;
+        }
+        .user-profile img{
+            width: 45px;
+            border-radius : 50%;
+            margin-right: 10px;
+        }
+        .user-profile p{
+            margin-bottom : -5px;
+
+        }
+        .user-profile small{
+            font-size: 12px;
+
+        }
+        .post-input-container{
+            padding-left : 55px;
+            padding-top : 20px;
+        }
+        .post-input-container textarea{
+            width : 100%;
+            border : 0;
+            outline : 0;
+            border-bottom : 1px solid #ccc;
+            background: transparent;
+            resize: none;
+        }
+        .add-post-links{
+            display : flex;
+            margin-top: 10px;
+        }
+        .add-post-links button{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            color : #626262;
+            margin-right: 30px;
+            font-size: 13px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding : 0;
+        }
+        .add-post-links button img{
+            width : 20px;
+            margin-right : 10px;
+        }
+        .menu-toggle {  
+   background-color: transparent;  
+   border: none;  
+   padding: 10px;  
+   cursor: pointer;  
+   margin-left: 50px;
+}  
+  
+.menu-toggle span {  
+   display: block;  
+   width: 20px;  
+   height: 2px;  
+   background-color: #fff;  
+   margin-bottom: 5px;  
+}  
+  
+.nav-menu {  
+   display: none;  
+   position: absolute;  
+   top: 50px;  
+   margin-top: 55px;
+   right: 0;  
+   background-color: white;  
+   padding: 10px;  
+
+}  
+  
+.nav-menu a {  
+   display: block;  
+   padding: 10px;  
+   color: black;  
+   text-decoration: none;  
+}  
+
+.nav-menu a img{
+    width: 25px;
+    margin-right: 15px;
+}
+  
+.nav-menu a:hover {  
+   background-color: #155db3;  
+}  
+  
+@media (max-width: 768px) {  
+   .nav-menu {  
+      display: none;  
+   }  
+}  
+  
+@media (max-width: 480px) {  
+   .nav-menu {  
+      display: none;  
+   }  
+}
+
+        /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+        button {
+    background-color: #1876f2; /* Facebook-style blue */
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 5px;
+    margin-top: 10px;
+    
+}
+        
+        .main-content{
+            width: 90%;
+            flex-basis: 85%;
+            margin-left: -32%;
+        
+
+        }
+        
+
+       
+
+        nav {
+            width: 71%;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 5%;
+        }
+        .nav-left{
+        
+            width: 20%; /* Take full width of nav */
+        }
+
+        .nav-left ul {
+            display: flex;
+            justify-content: space-around;
+            width: 40%; /* Take full width of nav */
+            padding: 10px 0;
+        }
+
+        
+
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
+            width: 30%;
+            margin-top: 0;
+           
+        }
+
+        .imp-links a {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        .write-post-container {
+            padding: 15px;
+        }
+
+        .post-input-container textarea {
+            padding-left: 0;
+        }
+
+        .post-input-container button {
+            width: 100%;
+        }
+
+        .user-profile img {
+            width: 35px;
+        }
+
+        .user-profile small {
+            font-size: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+        }
+
+      
+        
+    }
+ 
+
+
+
+
+    @media (max-width: 480px) {
+        .logo {
+            font-size: 1.2rem;
+        }
+        .search-box {
+            display: none; /* Hide the search input box */
+        }
+        .main-content {
+            flex-basis: 85%; /* Full width for main content */
+            margin-left:  -5%;
+            margin-right: 0;
+            margin-top: -3%;
+        }
+
+        .left-sidebar,
+        .right-sidebar {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+        .nav{
+            width: 120%;
+        }
+
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
+            width: 10%;
+            margin-top: 0;
+            margin-right: 0px; /* Add margin to the right nav */
+        }
+
+        .nav-left{
+            width: 20%;
+        }
+
+        .nav-left ul {
+            display: flex;
+            justify-content: space-around;
+            width: 10%; /* Take full width of nav */
+            padding: 10px 0;
+        }
+
+        .nav-left ul li img {
+            width: 24px;
+            margin: 0 10px;
+        }
+
+        .post-input-container textarea {
+            font-size: 14px;
+        }
+
+        .write-post-container {
+            padding: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+            margin-right: 15px;
+        }
+
+        .actions button {
+            font-size: 12px;
+        }
+
+        .comments textarea {
+            font-size: 12px;
+        }
+
+        .comments button {
+            font-size: 12px;
+        }
+
+        .post-header h3 {
+            font-size: 14px;
+        }
+
+        .post-header p {
+            font-size: 12px;
+        }
+    }
+    
+    
+
+       
+
+    </style>
+</head>
+<body>
+        <nav>
+            <div class="nav-left">
+                <div class="logo">UniRec</div>
+                <ul>
+                    <li><a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notification) }}"></a></li>
+                     <li><a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + mychat) }}"></a></li>
+                    <li><a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + myreels) }}"></a></li>
+                
+                </ul>
+            </div>
+            <div class="nav-right">
+                <form action="{{ url_for('search') }}" method="POST">
+                    <div class="search-box">
+                        <img src="{{ url_for('static', filename='images/' + search) }}">
+                        <input type="text" name="search_query" placeholder="Search..." required>
+                    </div>
+                </form>
+                <div class="nav-user-icon">
+                    <img src="{{ url_for('static', filename='images/' + user_profile_pic) }}" alt="Profile Picture" width="50" height="50">
+                </div>   
+                <button class="menu-toggle" onclick="toggleMenu()">  
+                    <span></span>  
+                    <span></span>  
+                    <span></span>  
+                  </button>  
+                  <div class="nav-menu" id="nav-menu">  
+                    <!-- additional icons here -->  
+                    <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/' + homeicon) }}">Home</a>  
+                    <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/' + profileicon) }}">Profile</a>  
+                    <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/' + helpersicon) }}">Helpers</a>  
+                    <a href="{{ url_for('scholarshipsearch') }}"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>  
+                    <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>  
+                    <a href="{{ url_for('courses') }}"><img src="{{ url_for('static', filename='images/' + mycourses) }}">Courses</a>  
+                  </div>  
+            </div>      
+            
+    
+        
+        </nav>
+    
+        <!-- Main Layout -->
+        <div class="container">
+    
+            <div class="left-sidebar">
+                <div class="imp-links">
+                    <a href="{{ url_for('friend_list') }}"><img src="{{ url_for('static', filename='images/' + myfriends) }}">Friends</a>
+                    <a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + inbox) }}">Chat</a>
+                    <a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notificationbell) }}">Notifications</a>
+                    <a href="{{ url_for('servers') }}"><img src="{{ url_for('static', filename='images/' + group) }}">Servers</a>
+                    <a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + video) }}">Reels</a>
+                    <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/' + webinar) }}">Webinar</a>
+                    <a href="{{ url_for('essays') }}">
+                        <img src="{{ url_for('static', filename='images/essays.png') }}" alt="Essays Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                        Essays
+                    </a>
+                    <a href="{{ url_for('mentors') }}">
+                        <img src="{{ url_for('static', filename='images/mentor.jpg') }}" alt="Mentors Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                        Mentors
+                    </a>  
+                    <a href="{{ url_for('challenges') }}">
+                        <img src="{{ url_for('static', filename='images/mentor.jpg') }}" alt="Challenges Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                        Challenges
+                    </a>
+    
+                </div>
+    
+            </div>
+            
+    
+            <!-- Main Content: Video Feed -->
+        <div class="main-content">
+
+            <h2>Welcome, {{ user.username }}</h2>
+        
+        <!-- Profile Section -->
+        <div class="section profile">
+            <h2>Your Profile</h2>
+            <img src="{{ url_for('static', filename='images/' + user_profile_pic) }}" alt="Profile Picture" width="150" height="150">
+            <div class="profile-info">
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>GPA for Class 9:</strong> {{ user.gpa_class_9 or 'Not provided' }}</p>
+                <p><strong>GPA for Class 10:</strong> {{ user.gpa_class_10 or 'Not provided' }}</p>
+                <p><strong>GPA for Class 11:</strong> {{ user.gpa_class_11 or 'Not provided' }}</p>
+                <p><strong>GPA for Class 12:</strong> {{ user.gpa_class_12 or 'Not provided' }}</p>
+                <p><strong>SAT Score:</strong> {{ user.sat_score or 'Not provided' }}</p>
+                <p><strong>Major Subject:</strong> {{ user.major_subject or 'Not provided' }}</p>
+                <p><strong>Minor Subject:</strong> {{ user.minor_subject or 'Not provided' }}</p>
+                <p><strong>Universities to Apply:</strong> {{ user.universities_to_apply or 'None' }}</p>
+                <p><strong>Universities Applied:</strong> {{ user.universities_applied or 'None' }}</p>
+                <p><strong>Currently Studying At:</strong> {{ user.universities_studying or 'None' }}</p>
+                <p><strong>Extra-Curricular Activities:</strong> {{ user.eca or 'None' }}</p>
+                <p><strong>Essay:</strong> {{ user.essay or 'None' }}</p>
+            </div>
+            <div class="actions">
+                <button onclick="location.href='{{ url_for('edit_profile') }}'">Edit Profile</button>
+                <button onclick="location.href='{{ url_for('upload_video') }}'">Upload Video</button>
+                <button onclick="location.href='{{ url_for('upload_reel') }}'">Upload Reel</button>
+            </div>
+        </div>
+        
+    
+    
+          
+         <!-- Friends Section -->
+         <div class="section friends">
+            <h2>Friends</h2>
+            {% if friends %}
+                <ul>
+                    {% for friend in friends %}
+                        <li>
+                            <a href="{{ url_for('view_profile', user_id=friend.id) }}">{{ friend.username }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No friends added yet.</p>
+            {% endif %}
+            <form method="POST" action="{{ url_for('search') }}">
+                <input type="text" name="search_query" placeholder="Search for users..." required>
+                <button type="submit">Search</button>
+            </form>
+            <a href="{{ url_for('view_friend_requests') }}">View Friend Requests</a>
+        </div>
+
+        <!-- Feed Section -->
+        <div class="section feed">
+            <h2>Your Feed</h2>
+            {% if videos %}
+                <ul>
+                    {% for video in videos %}
+                        <li>{{ video.title }} - {{ video.description }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No content available.</p>
+            {% endif %}
+            <a href="{{ url_for('public_feed') }}">Go to Public Feed</a>
+        </div>
+
+        <!-- Notifications Section -->
+        <div class="section notifications">
+            <h2>Notifications</h2>
+            <p>No new notifications.</p>
+        </div>
+        
+        <!-- Helpers Section -->
+        <div class="section helpers">
+            <h2>Helpers</h2>
+            {% if helpers %}
+                <ul>
+                    {% for helper in helpers %}
+                        <li>{{ helper.username }} is ready to give LOR or Counsel</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No helpers available.</p>
+            {% endif %}
+        </div>
+
+        <!-- Reels Section -->
+        <div class="section-reels">
+            <h2>Reels</h2>
+            <div class="reels-container">
+                {% if reels %}
+                    {% for reel in reels %}
+                        <div class="reel">
+                            <i class="fas fa-play play-icon"></i>
+                            <video width="100%" height="100%" controls>
+                                <source src="{{ url_for('static', filename='reels/' + reel.filename) }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No reels uploaded yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+      <!-- Bottom Navigation Bar -->
+<nav class="bottom-bar">
+    <a href="{{ url_for('helpers_section') }}" class="nav-link">
+        <span class="icon">👥</span>
+        <span class="label">Helpers</span>
+    </a>
+    <a href="{{ url_for('reels') }}" class="nav-link">
+        <span class="icon">🎥</span>
+        <span class="label">Reels</span>
+    </a>
+    <a href="{{ url_for('ai_search') }}" class="nav-link">
+        <span class="icon">🔍</span>
+        <span class="label">AI Search</span>
+    </a>
+</nav>
+        </div>
+        <div class="right-siderbar">
+            <div class = "imp-links">
+                <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/' + homeicon) }}">Home</a>
+                <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/' + profileicon) }}">Profile</a>
+                <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/' + helpersicon) }}">Helpers</a>
+                <a href="{{ url_for('scholarshipsearch') }}"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>
+                <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>
+                <a href="{{ url_for('courses') }}"><img src="{{ url_for('static', filename='images/' + mycourses) }}">Courses</a>
+            </div>
+        </div>
+        
+       
+</body>
+</html>

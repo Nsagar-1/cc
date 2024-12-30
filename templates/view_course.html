@@ -1,0 +1,904 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <title>About Webinar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 50px;
+        }
+
+        nav{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background : #1876f2;
+            padding: 5px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo{
+            color: #efefef;
+             display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.5rem;
+
+        }
+        .nav-left, .nav-right{
+            display: flex;
+            align-items: center;
+        }
+        .nav-left ul li{
+            list-style: none;
+            display: inline-block;
+        }
+        .nav-left ul li img{
+            width: 28px;
+            margin: 0 15px;
+        }
+        .nav-user-login img{
+            width: 40px;
+            border-radius: 50%;
+            cursor:pointer;
+        }
+        .nav-user-icon{
+            margin-left: 30px;
+            width: 10%;
+            height: 10%
+
+        }
+        .search-box{
+            background: #efefef;
+            width: 80%;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+        }
+        .search-box img{
+            width: 18px;
+        }
+        .search-box input{
+            width: 100%;
+            background: transparent;
+            padding: 10px;
+            outline: none;
+            border: 0;
+        }
+        .online{
+            position: relative;
+
+        }
+        .online::after{
+            content: '';
+            width: 7px;
+            height: 7px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background-color: #41db51;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .container{
+            display: flex;
+            justify-content: space-between;
+            padding: 13px 5%;
+
+        }
+        .left-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+        }
+        .right-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+
+        }
+        .main-content{
+            flex-basis: 40%;
+            height : 40%;
+            margin-right : 5%;
+
+        }
+        .imp-links a{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            color: #626262;
+            width: fit-content;
+        }
+        .imp-links a img{
+            width: 25px;
+            margin-right: 15px;
+        }
+        h3{
+            margin: 10px;
+            color: #cbdffa;
+            
+        }
+
+        .write-post-container{
+            width: 100%;
+            background : #fff;
+            border-radius : 6px;
+            padding : 20px;
+            color: #626262;
+        }
+        .user-profile{
+            display: flex; 
+            align-items: center;
+        }
+        .user-profile img{
+            width: 45px;
+            border-radius : 50%;
+            margin-right: 10px;
+        }
+        .user-profile p{
+            margin-bottom : -5px;
+
+        }
+        .user-profile small{
+            font-size: 12px;
+
+        }
+        .post-input-container{
+            padding-left : 55px;
+            padding-top : 20px;
+        }
+        .post-input-container textarea{
+            width : 100%;
+            border : 0;
+            outline : 0;
+            border-bottom : 1px solid #ccc;
+            background: transparent;
+            resize: none;
+        }
+        .add-post-links{
+            display : flex;
+            margin-top: 10px;
+        }
+        .add-post-links button{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            color : #626262;
+            margin-right: 30px;
+            font-size: 13px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding : 0;
+        }
+        .add-post-links button img{
+            width : 20px;
+            margin-right : 10px;
+        }
+        .sidebar {
+            width: 25%;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            font-size: 0.95em;
+        }
+        .sidebar h2 {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 12px 0;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            color: #333;
+        }
+        .sidebar ul li:hover {
+            background-color: #e2e8f0;
+        }
+        .sidebar ul li.active {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+        .main-content {
+            width: 70%;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        .main-content h3 {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .video-player-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        #video-player {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .video-list {
+            margin-top: 20px;
+        }
+        .video-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            background-color: #f9fafb;
+        }
+        .video-item:hover {
+            background-color: #f1f5f9;
+        }
+        .video-thumbnail {
+            width: 100px;
+            height: 60px;
+            background-color: #000;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-right: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .video-info {
+            flex: 1;
+        }
+        .video-title {
+            font-size: 1.1em;
+            color: #333;
+            margin: 0;
+        }
+        .resource-section, .assignment-section, .instructor-section {
+            margin-top: 25px;
+        }
+        .resource-item, .assignment-item, .instructor-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .instructor-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        .section-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+        /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+        /* Remove left and right sidebar for mobile/tablet */
+        .container {
+            flex-direction: column; /* Stack elements vertically */
+            padding: 0 5%;
+        }
+
+        .main-content {
+            flex-basis: 100%; /* Full width for main content */
+            margin-left: -5%; /* Adjust left margin */
+            margin-right: 0;
+        }
+
+        .left-sidebar,
+        .right-sidebar {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        nav {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 5%;
+        }
+
+        .nav-left ul {
+            display: flex;
+            justify-content: space-around;
+            width: 100%; /* Take full width of nav */
+            padding: 10px 0;
+        }
+
+        .search-box {
+            display: none; /* Hide the search input box */
+        }
+
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
+            width: auto;
+            margin-top: 0;
+            margin-right: 25px; /* Add margin to the right nav */
+        }
+
+        .nav-right .search-icon {
+            display: block; /* Show only the search icon on small screens */
+            cursor: pointer;
+        }
+
+        .imp-links a {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        .write-post-container {
+            padding: 15px;
+        }
+
+        .post-input-container textarea {
+            padding-left: 0;
+        }
+
+        .post-input-container button {
+            width: 100%;
+        }
+
+        .user-profile img {
+            width: 35px;
+        }
+
+        .user-profile small {
+            font-size: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+        }
+
+        /* Hide some elements on mobile (optional) */
+        .menu-container {
+            display: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .logo {
+            font-size: 1.2rem;
+        }
+
+        .nav-left ul li img {
+            width: 24px;
+            margin: 0 10px;
+        }
+
+        .post-input-container textarea {
+            font-size: 14px;
+        }
+
+        .write-post-container {
+            padding: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+            margin-right: 15px;
+        }
+
+        .actions button {
+            font-size: 12px;
+        }
+
+        .comments textarea {
+            font-size: 12px;
+        }
+
+        .comments button {
+            font-size: 12px;
+        }
+
+        .post-header h3 {
+            font-size: 14px;
+        }
+
+        .post-header p {
+            font-size: 12px;
+        }
+    }
+    
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            transition: transform 0.2s ease;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        h1 {
+            color: #333;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            word-wrap: break-word;
+        }
+
+        .webinar-detail {
+            color: #555;
+            font-size: 16px;
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            word-wrap: break-word;
+        }
+
+        .webinar-detail i {
+            font-size: 18px;
+            color: #007bff;
+            margin-right: 12px;
+        }
+
+        .description {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .description img {
+            max-width: 100%;
+            height: auto;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            margin: 10px 0;
+        }
+
+        .link-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        a.webinar-link {
+            display: inline-block;
+            padding: 15px 25px;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        a.webinar-link:hover {
+            background-color: #0056b3;
+        }
+
+        .countdown {
+            font-size: 18px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .feedback {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .feedback button {
+            padding: 12px 20px;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .feedback .rsvp {
+            background-color: #28a745;
+        }
+
+        .feedback .rsvp:hover {
+            background-color: #218838;
+        }
+
+        .feedback .like {
+            background-color: #ff4757;
+        }
+
+        .feedback .like:hover {
+            background-color: #e84141;
+        }
+        .button-group a {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 25px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .button-group a:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .webinar-detail, .description, .link-container, .feedback button {
+                font-size: 14px;
+            }
+
+            .webinar-detail i {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo">UniRec</div>
+            <ul>
+                <li><a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notification) }}"></a></li>
+                 <li><a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + mychat) }}"></a></li>
+                <li><a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + myreels) }}"></a></li>
+            
+            </ul>
+        </div>
+        <div class="nav-right">
+            <form action="{{ url_for('search') }}" method="POST">
+                <div class="search-box">
+                    <img src="{{ url_for('static', filename='images/' + search) }}">
+                    <input type="text" name="search_query" placeholder="Search..." required>
+                </div>
+            </form>
+            <div class="nav-user-icon online">
+                <img src="{{ url_for('static', filename='images/' + user_profile_pic) }}" alt="Profile Picture" width="50" height="50">
+            </div>   
+        </div>      
+        
+
+    
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="container">
+
+            <div class="left-sidebar">
+                <div class="imp-links">
+                    <a href="{{ url_for('friend_list') }}"><img src="{{ url_for('static', filename='images/' + myfriends) }}">Friends</a>
+                    <a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + inbox) }}">Chat</a>
+                    <a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notificationbell) }}">Notifications</a>
+                    <a href="{{ url_for('servers') }}"><img src="{{ url_for('static', filename='images/' + group) }}">Servers</a>
+                    <a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + video) }}">Reels</a>
+                    <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/' + webinar) }}">Webinar</a>
+
+                </div>
+
+            </div>
+            
+
+            <!-- Main Content: Video Feed -->
+        <div class="main-content">
+
+
+            <div class="sidebar">
+                <h2>{{ course.title }}</h2>
+                <ul>
+                    <li class="active" {% if videos %} onclick="playVideo('{{ url_for('static', filename='courses/' + videos[0].filename) }}')" {% endif %}>Introduction</li>
+                    <li>Course Outline</li>
+                    <li>Discussion Forum</li>
+                    <li><a href="{{ url_for('review_contents', course_id=course.id) }}">Review Course Resources and Assignments</a></li>
+                    <li>Resources</li>
+                    <li>Assignments</li>
+                    <li>Related Courses</li>
+                    <li>Course FAQs</li>
+                    <li>Instructor Info</li>
+                    <li>Download Course Material</li>
+                </ul>
+            </div>
+        
+            <!-- Main Content -->
+            <div class="main-content">
+                <h3>Course Overview</h3>
+                <p><strong>Category:</strong> {{ course.category }}</p>
+                <p><strong>Instructor:</strong> {{ course.uploader.username }}</p>
+                <p>{{ course.description }}</p>
+        
+                <!-- Video Player -->
+                <div class="video-player-container">
+                    {% if videos %}
+                        <video id="video-player" controls>
+                            <source id="video-source" src="{{ url_for('static', filename='courses/' + videos[0].filename) }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% else %}
+                        <p>No videos available.</p>
+                    {% endif %}
+                </div>
+        
+                <!-- Video Playlist -->
+                <h3 class="section-title">Course Videos</h3>
+                <div class="video-list">
+                    {% for video in videos %}
+                        <div class="video-item" onclick="playVideo('{{ url_for('static', filename='courses/' + video.filename) }}')">
+                            <div class="video-thumbnail">
+                                <video muted>
+                                    <source src="{{ url_for('static', filename='courses/' + video.filename) }}" type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="video-info">
+                                <h4 class="video-title">{{ loop.index }}. {{ video.title }}</h4>
+                                <p class="video-description">{{ video.description }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+        
+                <!-- Resources Section -->
+                <div class="resource-section">
+                    <h3 class="section-title">Course Resources</h3>
+                    {% for resource in resources %}
+                        <a class="resource-item" href="{{ url_for('static', filename='course_resources/' + resource.filename) }}" download>{{ resource.filename }}</a>
+                    {% endfor %}
+                </div>
+        
+                <!-- Assignments Section -->
+                <div class="assignment-section">
+                    <h3 class="section-title">Assignments</h3>
+                    {% for assignment in assignments %}
+                        <a class="assignment-item" href="{{ url_for('static', filename='course_assignments/' + assignment.filename) }}" download>{{ assignment.filename }}</a>
+                    {% endfor %}
+                </div>
+        
+                <div class="course-details">
+                    <h2>{{ course.title }}</h2>
+                    <p>{{ course.description }}</p>
+                    <p>Category: {{ course.category }}</p>
+                    <p id="length">
+                        {% if progress and progress.remaining_time == "00:00:00" %}
+                        <span id="remaining-time" style="color: green; font-weight: bold;">Completed</span>
+                        {% else %}
+                        Length: <span id="remaining-time">{{ remaining_time }}</span>
+                        {% endif %}
+                    </p>
+                    <p>Uploaded by: {{ course.uploader.username }}</p>
+                
+                    <!-- Start/Continue Button -->
+                    {% if not progress or progress.remaining_time != "00:00:00" %}
+                    <button id="start-course" class="btn btn-primary">Start</button>
+                    {% endif %}
+                </div>
+                
+        
+                
+        
+                <!-- Instructor Info Section -->
+                <div class="instructor-section">
+                    <h3 class="section-title">Instructor Info</h3>
+                    {% for instructor in instructors %}
+                        <div class="instructor-item">
+                            <img src="{{ url_for('static', filename='course_instructors/' + instructor.photo_filename) }}" alt="{{ instructor.name }}">
+                            <div>
+                                <strong>{{ instructor.name }}</strong><br>
+                                <a href="{{ instructor.profile_link }}" target="_blank">Profile</a> |
+                                <a href="{{ instructor.fb_link }}" target="_blank">Facebook</a> |
+                                <a href="{{ instructor.linkedin_link }}" target="_blank">LinkedIn</a>
+                                
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+    </div>
+
+    <div class="right-siderbar">
+        <div class = "imp-links">
+            <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/' + homeicon) }}">Home</a>
+            <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/' + profileicon) }}">Profile</a>
+            <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/' + helpersicon) }}">Helpers</a>
+            <a href="{{ url_for('scholarshipsearch') }}"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>
+            <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>
+            <a href="{{ url_for('courses') }}"><img src="{{ url_for('static', filename='images/' + mycourses) }}">Courses</a>
+        </div>
+    </div> 
+
+</div>
+
+<script>
+    function playVideo(videoPath) {
+        const videoPlayer = document.getElementById("video-player");
+        const videoSource = document.getElementById("video-source");
+        videoSource.src = videoPath;
+        videoPlayer.load();
+        videoPlayer.play();
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+    const videos = document.querySelectorAll('video');
+    
+    videos.forEach((video) => {
+        let watchTime = 0;
+        const videoId = video.dataset.videoId;
+
+        // Track watch time every second
+        video.addEventListener('timeupdate', () => {
+            if (!video.paused && !video.ended) {
+                watchTime += 1;
+                
+                // Send watch time to the server every 10 seconds
+                if (watchTime % 10 === 0) {
+                    fetch(`/update_watch_time`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            video_id: videoId,
+                            watch_time: 10, // Increment in seconds
+                        }),
+                    });
+                }
+            }
+        });
+    });
+});
+document.addEventListener('DOMContentLoaded', function () {
+        const startButton = document.getElementById('start-course');
+        const remainingTimeSpan = document.getElementById('remaining-time');
+        let timer;
+
+        startButton.addEventListener('click', function () {
+            const courseId = {{ course.id }};
+            const userId = {{ user.id }};
+            let time = remainingTimeSpan.textContent.split(':');
+            let hours = parseInt(time[0]);
+            let minutes = parseInt(time[1]);
+            let seconds = parseInt(time[2]);
+
+            // Start real-time countdown
+            if (timer) clearInterval(timer);
+            timer = setInterval(function () {
+                if (hours === 0 && minutes === 0 && seconds === 0) {
+                    clearInterval(timer);
+
+                    // Update the UI with a "Completed" sign
+                    remainingTimeSpan.textContent = "Completed";
+                    remainingTimeSpan.style.color = "green";
+                    remainingTimeSpan.style.fontWeight = "bold";
+
+                    // Send completion status to the server
+                    fetch('/complete_course', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            user_id: userId,
+                            course_id: courseId
+                        })
+                    }).then(response => response.json())
+                      .then(data => console.log("Course marked as completed:", data))
+                      .catch(err => console.error("Error marking course as completed:", err));
+                } else {
+                    if (seconds === 0) {
+                        seconds = 59;
+                        if (minutes === 0) {
+                            minutes = 59;
+                            hours -= 1;
+                        } else {
+                            minutes -= 1;
+                        }
+                    } else {
+                        seconds -= 1;
+                    }
+                }
+
+                // Update display
+                remainingTimeSpan.textContent = 
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+
+            // Save progress every 5 seconds
+            setInterval(function () {
+                const remainingTime = remainingTimeSpan.textContent;
+                fetch('/save_progress', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        course_id: courseId,
+                        remaining_time: remainingTime
+                    })
+                }).then(response => response.json())
+                  .then(data => console.log("Progress saved:", data))
+                  .catch(err => console.error("Error saving progress:", err));
+            }, 10); // Save every 5 seconds
+        });
+    });
+</script>
+
+</body>
+</html>
+
+
+
+    
+</body>
+</html>
+
+
+        
+
+   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+

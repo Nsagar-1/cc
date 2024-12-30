@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentorship Requests</title>
+    <style>
+/* Global Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Styling */
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #1876f2;
+    padding: 10px 5%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Logo Styling */
+.logo {
+    color: #efefef;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Left Navigation (Icons and Logo) */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-left ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-left ul li {
+    margin: 0 10px;
+}
+
+.nav-left ul li img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.nav-left ul li img:hover {
+    transform: scale(1.1); /* Slight zoom on hover */
+}
+
+/* Search Box Styling */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: #efefef;
+    border-radius: 20px;
+    padding: 0 10px;
+    width: 250px;
+    box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.1); /* Subtle inset shadow */
+}
+
+.search-box img {
+    width: 18px;
+    margin-right: 5px;
+}
+
+.search-box input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 8px;
+    outline: none;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Navigation Right Section */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* User Profile Icon */
+.nav-user-icon img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.nav-user-icon img:hover {
+    transform: scale(1.1);
+}
+
+/* Container Layout */
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 5%;
+    margin-top: 20px;
+}
+
+/* Left Sidebar */
+        .left-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+        }
+        .right-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+
+        }
+.imp-links a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #626262;
+}
+
+.imp-links a img {
+    width: 25px;
+    margin-right: 10px;
+}
+
+/* Main Content */
+.main-content {
+    flex-basis: 60%;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Profile Picture Styling */
+.profile-picture {
+    display: inline-block; /* Ensures it's treated as a single inline element */
+    position: relative; /* To allow adding decorative elements if needed */
+    width: 50px; /* Set width */
+    height: 50px; /* Set height */
+    border-radius: 50%; /* Makes the picture circular */
+    overflow: hidden; /* Ensures the image doesn't exceed the container */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Adds smooth hover effects */
+}
+
+.profile-picture img {
+    width: 100%; /* Ensures the image fills the container */
+    height: 100%; /* Ensures the aspect ratio is maintained */
+    object-fit: cover; /* Ensures the image is cropped properly */
+}
+
+.profile-picture:hover {
+    transform: scale(1.1); /* Slight zoom effect on hover */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* More pronounced shadow on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-box {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .nav-right {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .container {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .left-sidebar,
+    .right-sidebar {
+        display: none;
+    }
+
+    .main-content {
+        flex-basis: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .nav-user-icon img {
+        width: 35px;
+        height: 35px;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-left">
+            <div class="logo">UniRec</div>
+            <ul>
+                <li><a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notification) }}"></a></li>
+                 <li><a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + mychat) }}"></a></li>
+                <li><a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + myreels) }}"></a></li>
+            
+            </ul>
+        </div>
+        <div class="nav-right">
+            <form action="{{ url_for('search') }}" method="POST">
+                <div class="search-box">
+                    <img src="{{ url_for('static', filename='images/' + search) }}">
+                    <input type="text" name="search_query" placeholder="Search..." required>
+                </div>
+            </form>
+            <div class="nav-user-icon online">
+                <img src="{{ url_for('static', filename='images/' + user_profile_pic) }}" alt="Profile Picture" width="50" height="50">
+            </div>   
+        </div>      
+        
+
+    
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="container">
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+            <div class="imp-links">
+                <a href="{{ url_for('friend_list') }}"><img src="{{ url_for('static', filename='images/' + myfriends) }}">Friends</a>
+                <a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + inbox) }}">Chat</a>
+                <a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notificationbell) }}">Notifications</a>
+                <a href="{{ url_for('servers') }}"><img src="{{ url_for('static', filename='images/' + group) }}">Servers</a>
+                <a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + video) }}">Reels</a>
+                <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/' + webinar) }}">Webinar</a>
+                <a href="{{ url_for('essays') }}">
+                    <img src="{{ url_for('static', filename='images/essays.png') }}" alt="Essays Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                    Essays
+                </a>
+                <a href="{{ url_for('mentors') }}">
+                    <img src="{{ url_for('static', filename='images/mentor.jpg') }}" alt="Mentors Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                    Mentors
+                </a>  
+                <a href="{{ url_for('challenges') }}">
+                    <img src="{{ url_for('static', filename='images/mentor.jpg') }}" alt="Challenges Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                    Challenges
+                </a>
+                
+            </div>
+
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Mentorship Requests Sent</h1>
+            {% if sent_requests %}
+                <ul>
+                    {% for request in sent_requests %}
+                        <li class="request-card">
+                            <div class="request-info">
+                                <a href="{{ url_for('profile', user_id=request.receiver.id) }}" target="_blank" class="profile-picture">
+                                    <img src="{{ url_for('static', filename='profile_pics/' + (request.receiver.profile_pic or 'default.jpg')) }}" alt="Profile Picture">
+                                </a>
+                                
+                                <p>You sent a mentorship request to 
+                                    <a href="{{ url_for('profile', user_id=request.receiver.id) }}" target="_blank">
+                                        {{ request.receiver.username }}
+                                    </a>.
+                                </p>
+                                <p>Status: 
+                                    <span class="status {{ request.status }}">{{ request.status.capitalize() }}</span>
+                                </p>
+                            </div>
+                            {% if request.status == 'accepted' %}
+                                {% set other_user_id = request.receiver.id %}
+                                {% if other_user_id in mentorship_user_ids %}
+                                    <p>Mentorship established with {{ request.receiver.username }}.</p>
+                                {% else %}
+                                    <div class="action-buttons">
+                                        <p>Select your relation with {{ request.receiver.username }}:</p>
+                                        <button class="relation-button" onclick="setRelation({{ request.id }}, 'mentor')">I am Mentor</button>
+                                        <button class="relation-button" onclick="setRelation({{ request.id }}, 'mentee')">I am Mentee</button>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You haven't sent any mentorship requests.</p>
+            {% endif %}
+    
+            <!-- Received Requests -->
+            <h1>Mentorship Requests Received</h1>
+            {% if received_requests %}
+                <ul>
+                    {% for request in received_requests %}
+                        <li class="request-card">
+                            <div class="request-info">
+                                <a href="{{ url_for('profile', user_id=request.sender.id) }}" target="_blank">
+                                    <img src="{{ url_for('static', filename='profile_pics/' + (request.sender.profile_pic or 'default.jpg')) }}" alt="Profile Picture">
+                                </a>
+                                <p>
+                                    <a href="{{ url_for('profile', user_id=request.sender.id) }}" target="_blank">
+                                        {{ request.sender.username }}
+                                    </a> has sent a mentorship request to you.
+                                </p>
+                                <p>Status: 
+                                    <span class="status {{ request.status }}">{{ request.status.capitalize() }}</span>
+                                </p>
+                            </div>
+                            {% if request.status == 'pending' %}
+                                <div class="action-buttons">
+                                    <button class="accept-button" onclick="handleRequest({{ request.id }}, 'accept')">Accept</button>
+                                    <button class="reject-button" onclick="handleRequest({{ request.id }}, 'reject')">Reject</button>
+                                </div>
+                            {% elif request.status == 'accepted' %}
+                                {% set other_user_id = request.sender.id %}
+                                {% if other_user_id in mentorship_user_ids %}
+                                    <p>Mentorship established with {{ request.sender.username }}.</p>
+                                {% else %}
+                                    <div class="action-buttons">
+                                        <p>Select your relation with {{ request.sender.username }}:</p>
+                                        <button class="relation-button" onclick="setRelation({{ request.id }}, 'mentor')">I am Mentor</button>
+                                        <button class="relation-button" onclick="setRelation({{ request.id }}, 'mentee')">I am Mentee</button>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No mentorship requests received.</p>
+            {% endif %}
+    
+            <!-- Established Mentorships -->
+            <h1>Your Mentorships</h1>
+            {% if mentorships_as_mentor or mentorships_as_mentee %}
+                <ul>
+                    {% for mentorship in mentorships_as_mentor %}
+                        <li class="mentorship-card">
+                            <div class="mentorship-info">
+                                <p>You are mentoring 
+                                    <a href="{{ url_for('profile', user_id=mentorship.mentee.id) }}" target="_blank">
+                                        {{ mentorship.mentee.username }}
+                                    </a>
+                                </p>
+                                {% if mentorship.start_date and mentorship.end_date %}
+                                    <p>
+                                        {% if now >= mentorship.start_date and now <= mentorship.end_date %}
+                                            Status: <span class="status ongoing">Mentorship Ongoing</span>
+                                        {% elif now < mentorship.start_date %}
+                                            Status: <span class="status soon">Starts Soon</span>
+                                        {% else %}
+                                            Status: <span class="status completed">Mentored for {{ (mentorship.end_date - mentorship.start_date).days }} days</span> - {{ mentorship.start_date }} to {{ mentorship.end_date }}
+                                        {% endif %}
+                                    </p>
+                                {% else %}
+                                    <div>
+                                        <label for="start-date-{{ mentorship.id }}">Start Date:</label>
+                                        <input type="date" id="start-date-{{ mentorship.id }}">
+                                        
+                                        <label for="end-date-{{ mentorship.id }}">End Date:</label>
+                                        <input type="date" id="end-date-{{ mentorship.id }}">
+    
+                                        <button onclick="saveDates({{ mentorship.id }})">Save</button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                    {% for mentorship in mentorships_as_mentee %}
+                        <li class="mentorship-card">
+                            <div class="mentorship-info">
+                                <p>
+                                    <a href="{{ url_for('profile', user_id=mentorship.mentor.id) }}" target="_blank">
+                                        {{ mentorship.mentor.username }}
+                                    </a> is mentoring you
+                                </p>
+                                {% if mentorship.start_date and mentorship.end_date %}
+                                    <p>
+                                        {% if now >= mentorship.start_date and now <= mentorship.end_date %}
+                                            Status: <span class="status ongoing">Mentorship Ongoing</span>
+                                        {% elif now < mentorship.start_date %}
+                                            Status: <span class="status soon">Starts Soon</span>
+                                        {% else %}
+                                            Status: <span class="status completed">Mentored for {{ (mentorship.end_date - mentorship.start_date).days }} days</span> - {{ mentorship.start_date }} to {{ mentorship.end_date }}
+                                        {% endif %}
+                                    </p>
+                                {% else %}
+                                    <div>
+                                        <label for="start-date-mentee-{{ mentorship.id }}">Start Date:</label>
+                                        <input type="date" id="start-date-mentee-{{ mentorship.id }}">
+                                        
+                                        <label for="end-date-mentee-{{ mentorship.id }}">End Date:</label>
+                                        <input type="date" id="end-date-mentee-{{ mentorship.id }}">
+    
+                                        <button onclick="saveDates({{ mentorship.id }})">Save</button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You have no mentorship relationships.</p>
+            {% endif %}
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-siderbar">
+            <div class = "imp-links">
+                <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/' + homeicon) }}">Home</a>
+                <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/' + profileicon) }}">Profile</a>
+                <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/' + helpersicon) }}">Helpers</a>
+                <a href="{{ url_for('scholarshipsearch') }}"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>
+                <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>
+                <a href="{{ url_for('courses') }}"><img src="{{ url_for('static', filename='images/' + mycourses) }}">Courses</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleRequest(requestId, action) {
+            fetch(`/handle_mentorship_request/${requestId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: action })
+            }).then(response => {
+                if (response.status === 200) {
+                    alert(action === 'accept' ? 'Request accepted!' : 'Request rejected!');
+                    location.reload();
+                } else {
+                    alert('Error handling request.');
+                }
+            });
+        }
+
+        function setRelation(requestId, relation) {
+            fetch(`/set_mentorship_relation/${requestId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ relation: relation })
+            }).then(response => {
+                if (response.status === 200) {
+                    alert('Relation set successfully!');
+                    location.reload();
+                } else {
+                    alert('Error setting relation.');
+                }
+            });
+        }
+
+        function saveDates(mentorshipId) {
+            const startDate = document.getElementById(`start-date-${mentorshipId}`).value || document.getElementById(`start-date-mentee-${mentorshipId}`).value;
+            const endDate = document.getElementById(`end-date-${mentorshipId}`).value || document.getElementById(`end-date-mentee-${mentorshipId}`).value;
+
+            if (startDate && endDate) {
+                fetch(`/save_mentorship_dates/${mentorshipId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ start_date: startDate, end_date: endDate })
+                }).then(response => {
+                    if (response.status === 200) {
+                        alert('Dates saved successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error saving dates.');
+                    }
+                });
+            } else {
+                alert('Please select both start and end dates.');
+            }
+        }
+    </script>
+</body>
+</html>

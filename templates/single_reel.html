@@ -1,0 +1,813 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <title>About Webinar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 50px;
+        }
+
+        nav{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background : #1876f2;
+            padding: 5px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo{
+            color: #efefef;
+             display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.5rem;
+
+        }
+        .nav-left, .nav-right{
+            display: flex;
+            align-items: center;
+        }
+        .nav-left ul li{
+            list-style: none;
+            display: inline-block;
+        }
+        .nav-left ul li img{
+            width: 28px;
+            margin: 0 15px;
+        }
+        .nav-user-login img{
+            width: 40px;
+            border-radius: 50%;
+            cursor:pointer;
+        }
+        .nav-user-icon{
+            margin-left: 30px;
+            width: 10%;
+            height: 10%
+
+        }
+        .search-box{
+            background: #efefef;
+            width: 80%;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+        }
+        .search-box img{
+            width: 18px;
+        }
+        .search-box input{
+            width: 100%;
+            background: transparent;
+            padding: 10px;
+            outline: none;
+            border: 0;
+        }
+        .online{
+            position: relative;
+
+        }
+        .online::after{
+            content: '';
+            width: 7px;
+            height: 7px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background-color: #41db51;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .container{
+            display: flex;
+            justify-content: space-between;
+            padding: 13px 5%;
+
+        }
+        .left-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+        }
+        .right-sidebar{
+            flex-basis: 10%;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+
+        }
+        .main-content{
+            flex-basis: 40%;
+            height : 40%;
+            margin-right : 5%;
+
+        }
+        .imp-links a{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            color: #626262;
+            width: fit-content;
+        }
+        .imp-links a img{
+            width: 25px;
+            margin-right: 15px;
+        }
+        h3{
+            margin: 10px;
+            color: #cbdffa;
+            
+        }
+
+        .write-post-container{
+            width: 100%;
+            background : #fff;
+            border-radius : 6px;
+            padding : 20px;
+            color: #626262;
+        }
+        .user-profile{
+            display: flex; 
+            align-items: center;
+        }
+        .user-profile img{
+            width: 45px;
+            border-radius : 50%;
+            margin-right: 10px;
+        }
+        .user-profile p{
+            margin-bottom : -5px;
+
+        }
+        .user-profile small{
+            font-size: 12px;
+
+        }
+        .post-input-container{
+            padding-left : 55px;
+            padding-top : 20px;
+        }
+        .post-input-container textarea{
+            width : 100%;
+            border : 0;
+            outline : 0;
+            border-bottom : 1px solid #ccc;
+            background: transparent;
+            resize: none;
+        }
+        .add-post-links{
+            display : flex;
+            margin-top: 10px;
+        }
+        .add-post-links button{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            color : #626262;
+            margin-right: 30px;
+            font-size: 13px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding : 0;
+        }
+        .add-post-links button img{
+            width : 20px;
+            margin-right : 10px;
+        }
+
+         /* Reel Container */
+         .reel-container {
+            width: 60%;
+            max-width: 1000px;
+            height: 80%;
+            background-color: #111;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .reel video {
+            width: 100%;
+            max-height: 500px;
+            border-radius: 10px;
+            object-fit: contain;
+            background-color: #000;
+        }
+
+        .reel-info {
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .reel-info h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .reel-info p {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Controls and Stats */
+        .reel-stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .reel-stats span {
+            display: flex;
+            align-items: center;
+        }
+
+        .reel-stats i {
+            margin-right: 8px;
+        }
+
+        /* Buttons */
+        .reel-controls {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .reel-controls button {
+            background: #222;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .reel-controls button:hover {
+            background-color: #444;
+        }
+
+        .reel-controls button.liked {
+            color: #ff5555;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            width: 100%;
+            margin-top: 20px;
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .comment-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .comment-input textarea {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            border: none;
+            padding: 8px;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .comment-input button {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .comment-input button:hover {
+            background-color: #0056b3;
+        }
+
+        .comments-list .comment {
+            background-color: #292929;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .comments-list .comment p {
+            margin: 0;
+        }
+        /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+        /* Remove left and right sidebar for mobile/tablet */
+        .container {
+            flex-direction: column; /* Stack elements vertically */
+            padding: 0 5%;
+        }
+
+        .main-content {
+            flex-basis: 100%; /* Full width for main content */
+            margin-left: -5%; /* Adjust left margin */
+            margin-right: 0;
+        }
+
+        .left-sidebar,
+        .right-sidebar {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        nav {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 5%;
+        }
+
+        .nav-left ul {
+            display: flex;
+            justify-content: space-around;
+            width: 100%; /* Take full width of nav */
+            padding: 10px 0;
+        }
+
+        .search-box {
+            display: none; /* Hide the search input box */
+        }
+
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
+            width: auto;
+            margin-top: 0;
+            margin-right: 25px; /* Add margin to the right nav */
+        }
+
+        .nav-right .search-icon {
+            display: block; /* Show only the search icon on small screens */
+            cursor: pointer;
+        }
+
+        .imp-links a {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        .write-post-container {
+            padding: 15px;
+        }
+
+        .post-input-container textarea {
+            padding-left: 0;
+        }
+
+        .post-input-container button {
+            width: 100%;
+        }
+
+        .user-profile img {
+            width: 35px;
+        }
+
+        .user-profile small {
+            font-size: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+        }
+
+        /* Hide some elements on mobile (optional) */
+        .menu-container {
+            display: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .logo {
+            font-size: 1.2rem;
+        }
+
+        .nav-left ul li img {
+            width: 24px;
+            margin: 0 10px;
+        }
+
+        .post-input-container textarea {
+            font-size: 14px;
+        }
+
+        .write-post-container {
+            padding: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+            margin-right: 15px;
+        }
+
+        .actions button {
+            font-size: 12px;
+        }
+
+        .comments textarea {
+            font-size: 12px;
+        }
+
+        .comments button {
+            font-size: 12px;
+        }
+
+        .post-header h3 {
+            font-size: 14px;
+        }
+
+        .post-header p {
+            font-size: 12px;
+        }
+    }
+    
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            transition: transform 0.2s ease;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        h1 {
+            color: #333;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            word-wrap: break-word;
+        }
+
+        .webinar-detail {
+            color: #555;
+            font-size: 16px;
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            word-wrap: break-word;
+        }
+
+        .webinar-detail i {
+            font-size: 18px;
+            color: #007bff;
+            margin-right: 12px;
+        }
+
+        .description {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .description img {
+            max-width: 100%;
+            height: auto;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            margin: 10px 0;
+        }
+
+        .link-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        a.webinar-link {
+            display: inline-block;
+            padding: 15px 25px;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        a.webinar-link:hover {
+            background-color: #0056b3;
+        }
+
+        .countdown {
+            font-size: 18px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .feedback {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .feedback button {
+            padding: 12px 20px;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .feedback .rsvp {
+            background-color: #28a745;
+        }
+
+        .feedback .rsvp:hover {
+            background-color: #218838;
+        }
+
+        .feedback .like {
+            background-color: #ff4757;
+        }
+
+        .feedback .like:hover {
+            background-color: #e84141;
+        }
+        .button-group a {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 25px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .button-group a:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .webinar-detail, .description, .link-container, .feedback button {
+                font-size: 14px;
+            }
+
+            .webinar-detail i {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo">UniRec</div>
+            <ul>
+                <li><a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notification) }}"></a></li>
+                 <li><a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + mychat) }}"></a></li>
+                <li><a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + myreels) }}"></a></li>
+            
+            </ul>
+        </div>
+        <div class="nav-right">
+            <form action="{{ url_for('search') }}" method="POST">
+                <div class="search-box">
+                    <img src="{{ url_for('static', filename='images/' + search) }}">
+                    <input type="text" name="search_query" placeholder="Search..." required>
+                </div>
+            </form>
+            <div class="nav-user-icon online">
+                <img src="{{ url_for('static', filename='images/' + user_profile_pic) }}" alt="Profile Picture" width="50" height="50">
+            </div>   
+        </div>      
+        
+
+    
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="container">
+
+            <div class="left-sidebar">
+                <div class="imp-links">
+                    <a href="{{ url_for('friend_list') }}"><img src="{{ url_for('static', filename='images/' + myfriends) }}">Friends</a>
+                    <a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + inbox) }}">Chat</a>
+                    <a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notificationbell) }}">Notifications</a>
+                    <a href="{{ url_for('servers') }}"><img src="{{ url_for('static', filename='images/' + group) }}">Servers</a>
+                    <a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + video) }}">Reels</a>
+                    <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/' + webinar) }}">Webinar</a>
+
+                </div>
+
+            </div>
+            
+
+            <!-- Main Content: Video Feed -->
+        <div class="main-content">
+
+
+            <div class="reel-container">
+                <!-- Video Player -->
+                <video id="reel-video" controls autoplay>
+                    <source src="{{ url_for('static', filename='reels/' + reel.filename) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+        
+                <!-- Reel Information -->
+                <div class="reel-info">
+                    <h2>{{ reel.title }}</h2>
+                    <p>{{ reel.description }}</p>
+                </div>
+        
+                <!-- Stats -->
+                <div class="reel-stats">
+                    <span><i class="fas fa-heart"></i> <span id="likes-count">{{ reel.likes }}</span></span>
+                    <span><i class="fas fa-comment"></i> <span id="comments-count">{{ reel.comments_count }}</span></span>
+                    <span><i class="fas fa-share"></i> <span id="shares-count">{{ reel.shares }}</span></span>
+                </div>
+        
+                <!-- Controls -->
+                <div class="reel-controls">
+                    <button onclick="toggleLike()" id="like-button" class="{{ 'liked' if reel.is_liked else '' }}">
+                        <i class="fas fa-heart"></i> Like
+                    </button>
+                    <button onclick="copyLink()">
+                        <i class="fas fa-share"></i> Share
+                    </button>
+                </div>
+        
+                <!-- Comments Section -->
+                <div class="comments-section">
+                    <h3>Comments</h3>
+                    <div class="comments-list" id="comments-list">
+                        {% for comment in reel.comments %}
+                            <div class="comment">
+                                <p>{{ comment.content }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+        
+                    <!-- Comment Input -->
+                    <div class="comment-input">
+                        <textarea id="comment-input" placeholder="Add a comment..."></textarea>
+                        <button onclick="addComment()">Post</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <div class="right-siderbar">
+        <div class = "imp-links">
+            <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/' + homeicon) }}">Home</a>
+            <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/' + profileicon) }}">Profile</a>
+            <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/' + helpersicon) }}">Helpers</a>
+            <a href="{{ url_for('scholarshipsearch') }}"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>
+            <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>
+            <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/' + courses) }}">Courses</a>
+        </div>
+    </div> 
+
+</div>
+
+<script>
+    function toggleLike() {
+        fetch('/like_reel', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reel_id: {{ reel.id }} })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const likesCount = document.getElementById("likes-count");
+                likesCount.textContent = data.likes;
+                const likeButton = document.getElementById("like-button");
+                likeButton.classList.toggle('liked', data.liked);
+            }
+        });
+    }
+
+    function copyLink() {
+const reelSlug = reelData[currentReelIndex].slug;  // Ensure slug is used here
+const reelUrl = `${window.location.origin}/reel/${reelSlug}`;  // Construct the full URL
+
+// Create a temporary input to hold the URL
+const tempInput = document.createElement('input');
+tempInput.value = reelUrl;
+document.body.appendChild(tempInput);
+
+// Select the text inside the input and copy it to the clipboard
+tempInput.select();
+document.execCommand('copy');
+
+// Remove the temporary input element
+document.body.removeChild(tempInput);
+
+// Optionally, alert the user or show a tooltip that the link was copied
+alert('Reel link copied to clipboard!');
+}
+
+
+
+    function addComment() {
+        const commentText = document.getElementById("comment-input").value.trim();
+        if (!commentText) return;
+
+        fetch('/comment_reel', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reel_id: {{ reel.id }}, comment: commentText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const commentsList = document.getElementById("comments-list");
+                commentsList.innerHTML += `<div class="comment"><p>${commentText}</p></div>`;
+                document.getElementById("comment-input").value = "";
+                const commentsCount = document.getElementById("comments-count");
+                commentsCount.textContent = data.comments_count;
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
+
+
+
+    
+
+
+   
+
+
+
+
+
+
+
+    
+
+
+
+
+   
+
+   

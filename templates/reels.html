@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reels Section</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1876f2;
+            padding: 10px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000; /* Ensure it's above other elements */
+        }
+
+        .logo {
+            color: #efefef;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #efefef;
+            border-radius: 20px;
+            padding: 0 10px;
+            width: 200px;
+        }
+
+        .search-box img {
+            width: 18px;
+            margin-right: 5px;
+        }
+
+        .search-box input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 10px;
+            outline: none;
+        }
+
+        .nav-user-icon img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 5%;
+            margin-top: 20px;
+        }
+
+        .left-sidebar,
+        .right-sidebar {
+            flex-basis: 15%;
+            position: sticky;
+            top: 70px;
+        }
+
+        .main-content {
+            flex-basis: 60%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .imp-links a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #626262;
+        }
+
+        .imp-links a img {
+            width: 25px;
+            margin-right: 10px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .reel-options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .reel-options a {
+            margin: 10px 0;
+            padding: 12px 30px;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .reel-options a:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .left-sidebar,
+            .right-sidebar {
+                display: none;
+            }
+
+            .main-content {
+                flex-basis: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <a class="logo" href="#">UniRec</a>
+        <form action="{{ url_for('search') }}" method="POST" class="search-box">
+            <img src="{{ url_for('static', filename='images/search.png') }}" alt="Search Icon">
+            <input type="text" name="search_query" placeholder="Search..." required>
+        </form>
+        <div class="nav-right">
+            <div class="nav-user-icon online">
+                <img src="{{ url_for('static', filename='images/user_profile_pic.jpg') }}" alt="Profile Picture">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="container">
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+            <div class="imp-links">
+                <a href="{{ url_for('friend_list') }}"><img src="{{ url_for('static', filename='images/friends.png') }}">Friends</a>
+                <a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + inbox) }}">Chat</a>
+                <a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/notificationbell.png') }}">Notifications</a>
+                <a href="{{ url_for('servers') }}"><img src="{{ url_for('static', filename='images/' + group) }}">Servers</a>
+                <a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + video) }}">Reels</a>
+                <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/webinar.png') }}">Webinar</a>
+                <a href="{{ url_for('essays') }}">
+                    <img src="{{ url_for('static', filename='images/essays.png') }}" alt="Essays Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                    Essays
+                </a>
+                <a href="{{ url_for('mentors') }}">
+                    <img src="{{ url_for('static', filename='images/mentor.jpg') }}" alt="Mentors Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                    Mentors
+                </a> 
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h2>Reels</h2>
+            <div class="reel-options">
+                <!-- Option to Upload Reels -->
+                <a href="{{ url_for('upload_reel') }}">Upload Reels</a>
+                <!-- Option to View Reels -->
+                <a href="{{ url_for('view_reels') }}">View Reels</a>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class = "imp-links">
+                <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/' + homeicon) }}">Home</a>
+                <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/' + profileicon) }}">Profile</a>
+                <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/' + helpersicon) }}">Helpers</a>
+                <a href="{{ url_for('scholarshipsearch') }}"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>
+                <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>
+                <a href="{{ url_for('courses') }}"><img src="{{ url_for('static', filename='images/' + mycourses) }}">Courses</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

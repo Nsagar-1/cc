@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Reels</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #0b0b0b;
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Outer Container */
+        .outer-container {
+            width: 45vw;
+            height: 90vh;
+            background-color: #000;
+            border-radius: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        /* Reel Container */
+        .reel-container {
+            width: 100%;
+            height: 100%;
+            background-color: #111;
+            border-radius: 18px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.7);
+            border: 2px solid #333;
+            transition: all 0.3s ease;
+        }
+
+        /* Video styles */
+        .reel video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.2s ease-in-out;
+            background-color: #000;
+            border-radius: 18px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* Animations for video transitions */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Landscape video styling */
+        .landscape {
+            width: 80%;
+            height: auto;
+            border-radius: 16px;
+        }
+
+        /* Portrait video styling */
+        .portrait {
+            width: 100%;
+            height: 100%;
+            border-radius: 18px;
+        }
+
+        /* Reel Info */
+        .reel-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #fff;
+            z-index: 2;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
+        }
+
+        .reel-title {
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .reel-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .reel-stats span {
+            display: flex;
+            align-items: center;
+        }
+
+        .reel-stats i {
+            margin-right: 5px;
+        }
+
+        /* Controls Around Reel Container */
+        .reel-controls {
+            position: absolute;
+            right: -60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .reel-controls button {
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            cursor: pointer;
+            color: white;
+            padding: 14px;
+            border-radius: 50%;
+            transition: transform 0.3s, background 0.3s;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+        }
+
+        .reel-controls button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .reel-controls button i {
+            font-size: 22px;
+        }
+
+        .reel-controls button.liked i {
+            color: #ff5555;
+        }
+
+        /* Navigation Buttons */
+        .navigation-buttons {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            left: -70px;
+        }
+
+        .nav-button {
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 18px;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 22px;
+            text-align: center;
+            transition: background 0.3s;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Comments Section */
+        .comments-section {
+            position: fixed;
+            top: 0;
+            right: -370px;
+            width: 350px;
+            height: 100%;
+            background-color: #1a1a1a;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s ease;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.8);
+            z-index: 4;
+            border-left: 2px solid #333;
+        }
+
+        .comments-section.active {
+            transform: translateX(-370px);
+        }
+
+        .comments-section h4 {
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        /* Comment Input */
+        .comment-input {
+            margin-top: auto;
+        }
+
+        .comment-input textarea {
+            width: 100%;
+            height: 80px;
+            border-radius: 10px;
+            border: none;
+            padding: 12px;
+            resize: none;
+            font-size: 16px;
+            background-color: #333;
+            color: #fff;
+            margin-bottom: 15px;
+            box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
+        }
+
+        .comment-input button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: #555;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .comment-input button:hover {
+            background: #777;
+        }
+
+        /* Comments List */
+        .comments-list .comment {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .comments-list .comment:hover {
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+        }
+
+        .comments-list .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: transparent;
+            border: none;
+            color: #ff4d4d;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .comments-list .delete-btn:hover {
+            color: #ff7878;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="outer-container">
+        <div class="navigation-buttons">
+            <button class="nav-button" onclick="navigateReels(-1)">
+                <i class="fas fa-chevron-up"></i>
+            </button>
+            <button class="nav-button" onclick="navigateReels(1)">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+
+        <div class="reel-container" id="reel-container">
+            <video id="current-reel" autoplay muted loop></video>
+            <div class="reel-info">
+                <p class="reel-title" id="reel-title"></p>
+                <div class="reel-stats">
+                    <span><i class="fas fa-heart"></i> <span id="likes-count"></span></span>
+                    <span><i class="fas fa-comment"></i> <span id="comments-count"></span></span>
+                    <span><i class="fas fa-share"></i> <span id="shares-count"></span></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="reel-controls">
+            <button onclick="toggleLike()" id="like-button"><i class="fas fa-heart"></i></button>
+            <button onclick="toggleComments()"><i class="fas fa-comment"></i></button>
+            <button onclick="openShareModal()"><i class="fas fa-share"></i></button>
+            <button onclick="copyLink()"><i class="fas fa-link"></i> Copy Link</button>
+
+        </div>
+        
+    </div>
+
+    <div class="comments-section" id="comments-section" style="display: none;">
+        <h4>Comments</h4>
+        <button onclick="toggleComments()" id="close-comments-btn">Close Comments</button>
+        <div class="comments-list" id="comments-list"></div>
+        <div class="comment-input">
+            <textarea placeholder="Add a comment..."></textarea>
+            <button onclick="addComment()">Post Comment</button>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="share-modal" style="display:none;">
+        <h4>Select Friend to Share</h4>
+        <div id="friends-list"></div>
+        <button id="share-button" onclick="shareReel()"><i class="fas fa-share"></i> Share</button>
+    </div>
+
+    <script>
+
+const reelData = [
+        {% for reel in reels %}
+            {
+                id: "{{ reel.id }}",
+                slug: "{{ reel.slug }}",  // Ensure the slug is here
+                title: "{{ reel.title }}",
+                description: "{{ reel.description }}",
+                videoSrc: "{{ url_for('static', filename='reels/' + reel.filename) }}",
+                likes: {{ reel.likes }},
+                comments_count: {{ reel.comments_count }},
+                shares: {{ reel.shares }},
+                isLiked: {{ 'true' if reel.is_liked else 'false' }},
+                isLandscape: {{ 'true' if reel.is_landscape else 'false' }}
+            },
+        {% endfor %}
+    ];
+
+
+
+        let currentReelIndex = 0;
+
+        function loadReel(index) {
+            const reel = reelData[index];
+            const videoElement = document.getElementById("current-reel");
+            videoElement.src = reel.videoSrc;
+            videoElement.className = reel.isLandscape ? "landscape" : "portrait";
+            document.getElementById("reel-title").textContent = reel.title;
+            document.getElementById("likes-count").textContent = reel.likes;
+            document.getElementById("comments-count").textContent = reel.comments_count;
+            document.getElementById("shares-count").textContent = reel.shares;
+            document.getElementById("like-button").classList.toggle('liked', reel.isLiked);
+        }
+
+        function navigateReels(direction) {
+            closeComments();
+            currentReelIndex = (currentReelIndex + direction + reelData.length) % reelData.length;
+            loadReel(currentReelIndex);
+        }
+
+        function toggleComments() {
+            const commentsSection = document.getElementById("comments-section");
+    
+            if (commentsSection.style.display === "none" || !commentsSection.classList.contains("active")) {
+                commentsSection.style.display = "block";
+                commentsSection.classList.add("active");
+                loadComments();
+            } else {
+                closeComments();
+            }
+        }
+    
+        function openComments() {
+            const commentsSection = document.getElementById("comments-section");
+            commentsSection.style.display = "block";
+            commentsSection.classList.add("active");
+            loadComments();
+        }
+    
+        function closeComments() {
+            const commentsSection = document.getElementById("comments-section");
+            commentsSection.style.display = "none";
+            commentsSection.classList.remove("active");
+        }
+    
+        function loadComments() {
+    const reelSlug = reelData[currentReelIndex].id;  // Use slug instead of id
+    fetch(`/get_comments/${reelSlug}`)
+        .then(response => response.json())
+        .then(data => {
+            const commentsList = document.getElementById("comments-list");
+            commentsList.innerHTML = data.comments.map(comment => `
+                <div class="comment" id="comment-${comment.id}">
+                    <p>${comment.content}</p>
+                    ${comment.user_id === {{ session['user_id'] }} ? 
+                        `<button class="delete-btn" onclick="deleteComment(${comment.id})">Delete</button>` : ''}
+                </div>
+            `).join('');
+            document.getElementById("comments-count").textContent = data.comments.length;
+        });
+}
+
+    
+        function addComment() {
+            const reel = reelData[currentReelIndex];
+            const commentInput = document.querySelector(".comment-input textarea");
+            const commentText = commentInput.value.trim();
+            if (!commentText) return;
+    
+            fetch('/comment_reel', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({reel_id: reel.id, comment: commentText})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const commentsList = document.getElementById("comments-list");
+                    commentsList.innerHTML += `
+                        <div class="comment" id="comment-${data.comment_id}">
+                            <p>${commentText}</p>
+                            <button class="delete-btn" onclick="deleteComment(${data.comment_id})">Delete</button>`;
+                    commentInput.value = '';
+                    reel.comments_count += 1;
+                    document.getElementById("comments-count").textContent = reel.comments_count;
+                }
+            });
+        }
+    
+        function deleteComment(commentId) {
+            fetch('/delete_comment', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ comment_id: commentId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById(`comment-${commentId}`).remove();
+                    const reel = reelData[currentReelIndex];
+                    reel.comments_count -= 1;
+                    document.getElementById("comments-count").textContent = reel.comments_count;
+                }
+            });
+        }
+
+        function toggleLike() {
+            const reel = reelData[currentReelIndex];
+            const likeButton = document.getElementById("like-button");
+            fetch('/like_reel', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({reel_id: reel.id})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    reel.isLiked = data.liked;
+                    reel.likes = data.likes;
+                    document.getElementById("likes-count").textContent = reel.likes;
+                    likeButton.classList.toggle('liked', reel.isLiked);
+                }
+            });
+        }
+
+        // Share modal handling
+        function openShareModal() {
+            const shareModal = document.getElementById("share-modal");
+            shareModal.style.display = "block";
+            loadFriends();
+        }
+
+        function loadFriends() {
+    fetch('/get_friends')
+    .then(response => response.json())
+    .then(data => {
+        const friendsList = document.getElementById("friends-list");
+        friendsList.innerHTML = data.friends.map(friend => `
+            <div class="friend">
+                <input type="checkbox" name="friend" value="${friend.username}" id="friend-${friend.username}">
+                <label for="friend-${friend.username}">${friend.username}</label>
+            </div>
+        `).join('');
+    });
+}
+
+
+        function shareReel() {
+    const reelSlug = reelData[currentReelIndex].slug;  
+    const selectedFriends = Array.from(document.querySelectorAll('input[name="friend"]:checked'))
+                                 .map(checkbox => checkbox.value);
+
+    const shareButton = document.querySelector('button[onclick="shareReel()"]');  // Select the share button
+
+    if (selectedFriends.length === 0) {
+        alert("Please select at least one friend to share with.");
+        return;
+    }
+
+    fetch('/send_reel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reel_id: reelSlug, friends_usernames: selectedFriends })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            shareButton.style.backgroundColor = '#28a745';  // Green for success
+            alert("Reel shared successfully!");
+            document.getElementById("share-modal").style.display = "none";
+        } else {
+            shareButton.style.backgroundColor = '#dc3545';  // Red for error
+            alert("Error sharing reel.");
+        }
+    })
+    .catch(() => {
+        shareButton.style.backgroundColor = '#dc3545';  // Red for error
+        alert("Error sharing reel.");
+    });
+}
+
+
+function copyLink() {
+    const reelSlug = reelData[currentReelIndex].slug;  // Ensure slug is used here
+    const reelUrl = `${window.location.origin}/reel/${reelSlug}`;  // Construct the full URL
+
+    // Create a temporary input to hold the URL
+    const tempInput = document.createElement('input');
+    tempInput.value = reelUrl;
+    document.body.appendChild(tempInput);
+
+    // Select the text inside the input and copy it to the clipboard
+    tempInput.select();
+    document.execCommand('copy');
+
+    // Remove the temporary input element
+    document.body.removeChild(tempInput);
+
+    // Optionally, alert the user or show a tooltip that the link was copied
+    alert('Reel link copied to clipboard!');
+}
+
+
+        document.addEventListener('DOMContentLoaded', () => loadReel(currentReelIndex));
+    </script>
+
+</body>
+</html>

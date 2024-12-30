@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification</title>
+    <style>
+        /* Global Style */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #message {
+            visibility: hidden;
+            font-size: small;
+            background-color: #ff4d4d;
+            padding: 2px;
+            color: #fff;
+            margin-top: -4%;
+            margin-bottom: 10%;
+            width: 100%;
+            height: 4%;
+        }
+        h2{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5%;
+        }
+      
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #222;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            background: #333;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            background-color: #ff2a2a;
+            padding: 10px;
+            border-radius: 5px;
+            visibility: hidden;
+        }
+        p1 {
+            font-size: small;
+            margin-bottom: 10%;
+
+        }
+
+        label {
+            display: block;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+   
+       
+    </style>
+</head>
+<body>
+    <div class="container"> 
+        <h3 id="message">Code didn't match</h3>
+        <h2> Verify your Account</h2>
+        <p1> We have sent you an email with a verification code.
+            {{email}}
+            Please enter the code below to verify your account.</p1>
+        
+        <form action="/verify" method="post">
+            <label for="data">Enter your code</label>
+            <input type="number" id="data" name="code" >
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        const message = "{{ message }}";
+        const user_type = "{{ user_type }}";
+        console.log(message);
+        console.log(user_type);
+
+        
+        document.getElementById("message").innerText = message;
+        if(message){
+            if (message == "Sucessfully validated" ){
+               document.getElementById("message").style.backgroundColor="Green";
+               document.getElementById("message").style.visibility = "visible"; 
+               if( user_type == "new_user")  { 
+                window.location.href = "/public_feed" ; 
+                 }
+                else if ( user_type == "existing_user") {
+
+                window.location.href = "/new_password";
+
+                }
+               
+                }
+            else {
+            document.getElementById("message").style.visibility = "visible";
+            setTimeout(() => {
+                document.getElementById("message").style.visibility = "hidden";
+            }, 3000);
+        }
+        }
+    </script>
+</body>
+</html>

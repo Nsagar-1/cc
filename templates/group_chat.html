@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Chat - {{ group.name }}</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <style>
+         .menu-toggle {  
+   background-color: transparent;  
+   border: none;  
+   padding: 10px;  
+   cursor: pointer;  
+   margin-left: 50px;
+}  
+  
+.menu-toggle span {  
+   display: block;  
+   width: 20px;  
+   height: 2px;  
+   background-color: #fff;  
+   margin-bottom: 5px;  
+}  
+  
+.nav-menu {  
+   display: none;  
+   position: absolute;  
+   top: 50px;  
+   margin-top: 55px;
+   right: 0;  
+   background-color: white;  
+   padding: 10px;  
+
+}  
+  
+.nav-menu a {  
+   display: block;  
+   padding: 10px;  
+   color: black;  
+   text-decoration: none;  
+}  
+
+.nav-menu a img{
+    width: 25px;
+    margin-right: 15px;
+}
+  
+.nav-menu a:hover {  
+   background-color: #155db3;  
+}  
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+    
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+    
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1876f2;
+            padding: 10px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin: 0;
+            width: 100%;
+        }
+    
+        .logo {
+            color: #efefef;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+    
+        .nav-left, .nav-right{
+            display: flex;
+            align-items: center;
+            width: 40%;
+        }
+        .nav-left ul li{
+            list-style: none;
+            display: inline-block;
+        }
+        .nav-left ul li img{
+            width: 28px;
+            margin: 0 15px;
+        }
+        .nav-user-login img{
+            width: 40px;
+            border-radius: 50%;
+            cursor:pointer;
+        }
+        .nav-user-icon{
+            margin-left: 30px;
+            width: 10%;
+            height: 10%
+
+        }
+    
+        .search-box {
+            background: #efefef;
+            width: 70%;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            margin-right: 15px;
+        }
+    
+        .search-box img {
+            width: 18px;
+        }
+    
+        .search-box input {
+            width: 100%;
+            background: transparent;
+            padding: 10px;
+            outline: none;
+            border: 0;
+        }
+    
+        .online {
+            position: relative;
+        }
+    
+        .online::after {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background-color: #41db51;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 5%;
+        }
+    
+        .left-sidebar, .right-sidebar {
+            flex-basis: 15%;
+            position: sticky;
+            top: 70px;
+        }
+    
+        .main-content {
+            flex-basis: 60%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        .left-sidebar .imp-links a, .right-sidebar .imp-links a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #626262;
+            width: fit-content;
+        }
+    
+        .left-sidebar .imp-links a img, .right-sidebar .imp-links a img {
+            width: 25px;
+            margin-right: 10px;
+        }
+    
+        .messages {
+            border: 1px solid #ccc;
+            padding: 15px;
+            height: 300px;
+            overflow-y: scroll;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+    
+        .message {
+            margin-bottom: 10px;
+        }
+    
+        .message span {
+            font-weight: bold;
+        }
+    
+        form {
+            display: flex;
+            margin-top: 20px;
+        }
+    
+        form input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+    
+        form button {
+            padding: 10px;
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    
+        .member-list {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+    
+        .member-list h3 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+    
+        .member-list ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+    
+        .member-list li {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    
+        .member-list button {
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    
+        /* New Styles */
+        .container-1 {
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+            font-size: 22px;
+            text-align: center;
+        }
+    
+        .request {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+    
+        .request p {
+            margin: 0 0 15px;
+            font-size: 16px;
+            color: #333;
+        }
+    
+        .actions {
+            display: flex;
+            justify-content: flex-start;
+            gap: 15px;
+        }
+    
+        .actions button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+    
+        .actions button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+    
+        .actions button.decline {
+            background-color: #dc3545;
+        }
+    
+        .actions button.decline:hover {
+            background-color: #c82333;
+        }
+    
+        .no-requests {
+            text-align: center;
+            color: #888;
+            font-size: 16px;
+        }
+    
+        .create-server-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            text-align: center;
+        }
+    
+        .create-server-container h1 {
+            margin-bottom: 20px;
+            color: #1d3557;
+        }
+    
+        .create-server-container label {
+            font-weight: bold;
+            color: #333;
+            display: block;
+            margin-bottom: 8px;
+        }
+    
+        .create-server-container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease;
+        }
+    
+        .create-server-container input[type="text"]:focus {
+            border-color: #457b9d;
+            outline: none;
+        }
+    
+        .create-server-container button {
+            background-color: #1d3557;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+    
+        .create-server-container button:hover {
+            background-color: #457b9d;
+        }
+    
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+            }
+    
+            .actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+    
+            .actions button {
+                width: 100%;
+            }
+        }
+    
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 0 5%;
+            }
+    
+            .left-sidebar, .right-sidebar {
+                display: none;
+            }
+    
+            .main-content {
+                flex-basis: 100%;
+            }
+    
+            .search-box {
+                display: none;
+            }
+    
+            nav {
+                flex-direction: column;
+            }
+    
+            .actions button {
+                font-size: 12px;
+            }
+        }
+    
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.2rem;
+            }
+    
+            .nav-user-icon {
+                margin-right: 25px;
+            }
+        }
+        @media (max-width: 768px) {  
+   .nav-menu {  
+      display: none;  
+   }  
+}  
+  
+@media (max-width: 480px) {  
+   .nav-menu {  
+      display: none;  
+   }  
+}
+
+        /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+        button {
+    background-color: #1876f2; /* Facebook-style blue */
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 5px;
+    margin-top: 10px;
+    
+}
+        
+        .main-content{
+            width: 90%;
+            flex-basis: 85%;
+            margin-left: -32%;
+        
+
+        }
+        
+
+       
+
+        nav {
+            width: 71%;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 5%;
+        }
+        .nav-left{
+        
+            width: 20%; /* Take full width of nav */
+        }
+
+        .nav-left ul {
+            display: flex;
+            justify-content: space-around;
+            width: 40%; /* Take full width of nav */
+            padding: 10px 0;
+        }
+
+        
+
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
+            width: 30%;
+            margin-top: 0;
+           
+        }
+
+        .imp-links a {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        .write-post-container {
+            padding: 15px;
+        }
+
+        .post-input-container textarea {
+            padding-left: 0;
+        }
+
+        .post-input-container button {
+            width: 100%;
+        }
+
+        .user-profile img {
+            width: 35px;
+        }
+
+        .user-profile small {
+            font-size: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+        }
+
+      
+        
+    }
+ 
+
+
+
+
+    @media (max-width: 480px) {
+        .logo {
+            font-size: 1.2rem;
+        }
+        .search-box {
+            display: none; /* Hide the search input box */
+        }
+        .main-content {
+            flex-basis: 85%; /* Full width for main content */
+            margin-left:  -5%;
+            margin-right: 0;
+            margin-top: -3%;
+        }
+
+        .left-sidebar,
+        .right-sidebar {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+        .nav{
+            width: 120%;
+        }
+
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
+            width: 10%;
+            margin-top: 0;
+            margin-right: 0px; /* Add margin to the right nav */
+        }
+
+        .nav-left{
+            width: 20%;
+        }
+
+        .nav-left ul {
+            display: flex;
+            justify-content: space-around;
+            width: 10%; /* Take full width of nav */
+            padding: 10px 0;
+        }
+
+        .nav-left ul li img {
+            width: 24px;
+            margin: 0 10px;
+        }
+
+        .post-input-container textarea {
+            font-size: 14px;
+        }
+
+        .write-post-container {
+            padding: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+            margin-right: 15px;
+        }
+
+        .actions button {
+            font-size: 12px;
+        }
+
+        .comments textarea {
+            font-size: 12px;
+        }
+
+        .comments button {
+            font-size: 12px;
+        }
+
+        .post-header h3 {
+            font-size: 14px;
+        }
+
+        .post-header p {
+            font-size: 12px;
+        }
+    }
+    </style>
+    
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo">UniRec</div>
+            <ul>
+                <li><a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notification) }}"></a></li>
+                 <li><a href="#"><img src="{{ url_for('static', filename='images/' + mychat) }}"></a></li>
+                <li><a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + myreels) }}"></a></li>
+            
+            </ul>
+        </div>
+        <div class="nav-right">
+            <form action="{{ url_for('search') }}" method="POST">
+                <div class="search-box">
+                    <img src="{{ url_for('static', filename='images/' + search) }}">
+                    <input type="text" name="search_query" placeholder="Search..." required>
+                </div>
+            </form>
+            <div class="nav-user-icon online">
+                <img src="{{ url_for('static', filename='images/' + user_profile_pic) }}" alt="Profile Picture" width="50" height="50">
+
+            </div>   
+            <button class="menu-toggle" onclick="toggleMenu()">  
+                <span></span>  
+                <span></span>  
+                <span></span>  
+              </button>  
+              <div class="nav-menu" id="nav-menu">  
+                <!-- additional icons here -->  
+                <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/' + homeicon) }}">Home</a>  
+                <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/' + profileicon) }}">Profile</a>  
+                <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/' + helpersicon) }}">Helpers</a>  
+                <a href="{{ url_for('scholarshipsearch') }}"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>  
+                <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>  
+                <a href="{{ url_for('courses') }}"><img src="{{ url_for('static', filename='images/' + mycourses) }}">Courses</a>  
+              </div>  
+        </div>      
+        
+
+    
+    </nav>
+
+    <div class="container">
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+            <div class="imp-links">
+                <a href="{{ url_for('friend_list') }}"><img src="{{ url_for('static', filename='images/friends.png') }}"> Friends</a>
+                <a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + inbox) }}">Chat</a>
+                <a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/notificationbell.png') }}"> Notifications</a>
+                <a href="{{ url_for('servers') }}"><img src="{{ url_for('static', filename='images/group.png') }}"> Servers</a>
+                <a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + video) }}">Reels</a>
+                <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/' + webinar) }}">Webinar</a>
+                <a href="{{ url_for('essays') }}">
+                    <img src="{{ url_for('static', filename='images/essays.png') }}" alt="Essays Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                    Essays
+                </a>
+                <a href="{{ url_for('mentors') }}">
+                    <img src="{{ url_for('static', filename='images/mentor.jpg') }}" alt="Mentors Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                    Mentors
+                </a>     
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Group Chat: {{ group.name }}</h1>
+            <div class="messages" id="messages">
+                {% for message in messages %}
+                    <div class="message">
+                        <span>{{ message.user.username }}:</span> {{ message.content }}
+                        <small>({{ message.timestamp.strftime('%H:%M:%S') }})</small>
+                    </div>
+                {% endfor %}
+            </div>
+            <form id="messageForm">
+                <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off">
+                <button type="submit">Send</button>
+            </form>
+
+            <!-- Group Member List -->
+            <div class="member-list">
+                <h3>Group Members</h3>
+                <ul id="memberList">
+                    {% for member in group.members %}
+                        <li>
+                            {{ member.username }}
+                            <button onclick="removeMember({{ member.id }})">Remove</button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class="imp-links">
+                <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/homeicon.png') }}"> Home</a>
+                <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/profileicon.png') }}"> Profile</a>
+                <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/helpers.png') }}"> Helpers</a>
+                <a href="{{ url_for('scholarshipsearch') }}"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>
+                <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>
+                <a href="{{ url_for('courses') }}"><img src="{{ url_for('static', filename='images/' + mycourses) }}">Courses</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    
+        let selectedUserId = null;
+    
+        // Join the room for this group using a unique room name
+        const groupRoom = 'group_{{ group.id }}';
+        socket.emit('join_group_chat', { group_id: {{ group.id }} });
+    
+        // Handle new messages from the server
+        socket.on('new_group_message', function(data) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.innerHTML = `<span>${data.username}:</span> ${data.message} <small>(${data.timestamp})</small>`;
+            document.getElementById('messages').appendChild(messageDiv);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight; // Auto-scroll
+        });
+    
+        // Send a message when the form is submitted
+        document.getElementById('messageForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const message = document.getElementById('messageInput').value;
+            socket.emit('send_group_message', {
+                group_id: {{ group.id }},
+                message: message
+            });
+            document.getElementById('messageInput').value = '';  // Clear input
+        });
+
+
+        const searchInput = document.getElementById('searchInput');
+    const clearSearchButton = document.getElementById('clearSearchButton');
+
+    // Show the clear button when there is text
+    searchInput.addEventListener('input', () => {
+        clearSearchButton.style.display = searchInput.value ? 'block' : 'none';
+    });
+
+    // Clear the input field when the clear button is clicked
+    clearSearchButton.addEventListener('click', () => {
+        searchInput.value = '';
+        clearSearchButton.style.display = 'none';
+    });
+    
+        // Search for users to add to the group
+        document.getElementById('searchUserInput').addEventListener('input', function() {
+            const query = this.value;
+            if (query.length > 1) {
+                fetch(`/search_user?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const suggestionBox = document.getElementById('suggestionBox');
+                        suggestionBox.innerHTML = '';
+                        if (data.users.length > 0) {
+                            suggestionBox.style.display = 'block';
+                            data.users.forEach(user => {
+                                const userDiv = document.createElement('div');
+                                userDiv.textContent = user.username;
+                                userDiv.dataset.userId = user.id;
+                                userDiv.addEventListener('click', function() {
+                                    selectedUserId = user.id;
+                                    document.getElementById('searchUserInput').value = user.username;
+                                    document.getElementById('searchUserButton').disabled = false;
+                                    suggestionBox.style.display = 'none';
+                                });
+                                suggestionBox.appendChild(userDiv);
+                            });
+                        } else {
+                            suggestionBox.style.display = 'none';
+                        }
+                    });
+            } else {
+                document.getElementById('suggestionBox').style.display = 'none';
+            }
+        });
+    
+        // Show user profile on search button click
+        document.getElementById('searchUserButton').addEventListener('click', function() {
+            if (selectedUserId) {
+                fetch(`/get_user_profile/${selectedUserId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('profilePic').src = `/static/images/${data.profile_pic}`;
+                        document.getElementById('profileUsername').textContent = data.username;
+                        document.getElementById('profileEmail').textContent = `Email: ${data.email}`;
+                        document.getElementById('profileBox').style.display = 'block';
+                    });
+            }
+        });
+    
+        // Add user to group
+        document.getElementById('addToGroupButton').addEventListener('click', function() {
+            if (selectedUserId) {
+                fetch('/add_member_to_group', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ group_id: {{ group.id }}, user_id: selectedUserId }),
+                })
+                .then(response => {
+                    if (response.status === 200) {
+                        document.getElementById('successMessage').style.display = 'block';
+                        setTimeout(() => {
+                            document.getElementById('successMessage').style.display = 'none';
+                            location.reload(); // Reload page to show the updated group member list
+                        }, 1500);
+                    } else {
+                        alert('Error adding user to group.');
+                    }
+                });
+            }
+        });
+    
+        // Remove user from group
+        function removeMember(userId) {
+            fetch('/remove_member_from_group', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ group_id: {{ group.id }}, user_id: userId }),
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    location.reload(); // Reload page to update the member list
+                } else {
+                    document.getElementById('errorMessage').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('errorMessage').style.display = 'none';
+                    }, 3000);
+                }
+            });
+        }
+
+        function toggleMenu() {  
+   var menu = document.getElementById('nav-menu');  
+   menu.style.display = menu.style.display === 'block' ? 'none' : 'block';  
+}
+    </script>
+    
+    </body>
+    </html>

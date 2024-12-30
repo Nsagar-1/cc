@@ -1,0 +1,476 @@
+<!doctype html>
+<html>
+<head>
+    <title>Edit Courses</title>
+    <style>
+        
+        .add-post-links{
+            display : flex;
+            margin-top: 10px;
+        }
+        .add-post-links button{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            color : #626262;
+            margin-right: 30px;
+            font-size: 13px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding : 0;
+        }
+        .add-post-links button img{
+            width : 20px;
+            margin-right : 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        input[type="file"] {
+            margin-top: 5px;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button[type="button"] {
+            margin-top: 5px;
+            padding: 5px 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+        /* Remove left and right sidebar for mobile/tablet */
+        .container {
+            flex-direction: column; /* Stack elements vertically */
+            padding: 0 5%;
+        }
+
+        .main-content {
+            flex-basis: 100%; /* Full width for main content */
+            margin-left: -5%; /* Adjust left margin */
+            margin-right: 0;
+        }
+
+        .left-sidebar,
+        .right-sidebar {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        nav {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 5%;
+        }
+
+        .nav-left ul {
+            display: flex;
+            justify-content: space-around;
+            width: 100%; /* Take full width of nav */
+            padding: 10px 0;
+        }
+
+        .search-box {
+            display: none; /* Hide the search input box */
+        }
+
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
+            width: auto;
+            margin-top: 0;
+            margin-right: 25px; /* Add margin to the right nav */
+        }
+
+        .nav-right .search-icon {
+            display: block; /* Show only the search icon on small screens */
+            cursor: pointer;
+        }
+
+        .imp-links a {
+            display: none; /* Hide sidebars */
+            flex-basis: 0%; /* No space allocated for sidebars */
+            position: static; /* Remove sticky position */
+        }
+
+        .write-post-container {
+            padding: 15px;
+        }
+
+        .post-input-container textarea {
+            padding-left: 0;
+        }
+
+        .post-input-container button {
+            width: 100%;
+        }
+
+        .user-profile img {
+            width: 35px;
+        }
+
+        .user-profile small {
+            font-size: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+        }
+
+        /* Hide some elements on mobile (optional) */
+        .menu-container {
+            display: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .logo {
+            font-size: 1.2rem;
+        }
+
+        .nav-left ul li img {
+            width: 24px;
+            margin: 0 10px;
+        }
+
+        .post-input-container textarea {
+            font-size: 14px;
+        }
+
+        .write-post-container {
+            padding: 10px;
+        }
+
+        .add-post-links button {
+            font-size: 12px;
+            margin-right: 15px;
+        }
+
+        .actions button {
+            font-size: 12px;
+        }
+
+        .comments textarea {
+            font-size: 12px;
+        }
+
+        .comments button {
+            font-size: 12px;
+        }
+
+        .post-header h3 {
+            font-size: 14px;
+        }
+
+        .post-header p {
+            font-size: 12px;
+        }
+    }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo">UniRec</div>
+            <ul>
+                <li><a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notification) }}"></a></li>
+                 <li><a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + mychat) }}"></a></li>
+                <li><a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + myreels) }}"></a></li>
+            
+            </ul>
+        </div>
+        <div class="nav-right">
+            <form action="{{ url_for('search') }}" method="POST">
+                <div class="search-box">
+                    <img src="{{ url_for('static', filename='images/' + search) }}">
+                    <input type="text" name="search_query" placeholder="Search..." required>
+                </div>
+            </form>
+            <div class="nav-user-icon online">
+                <img src="{{ url_for('static', filename='images/' + user_profile_pic) }}" alt="Profile Picture" width="50" height="50">
+            </div>   
+            <button class="menu-toggle" onclick="toggleMenu()">  
+                <span></span>  
+                <span></span>  
+                <span></span>  
+              </button>  
+              <div class="nav-menu" id="nav-menu">  
+                <!-- additional icons here -->  
+                <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/' + homeicon) }}">Home</a>  
+                <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/' + profileicon) }}">Profile</a>  
+                <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/' + helpersicon) }}">Helpers</a>  
+                <a href="{{ url_for('scholarshipsearch') }}"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>  
+                <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>  
+                <a href="{{ url_for('courses') }}"><img src="{{ url_for('static', filename='images/' + mycourses) }}">Courses</a>  
+              </div>
+        </div>      
+        
+
+    
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="container">
+
+            <div class="left-sidebar">
+                <div class="imp-links">
+                    <a href="{{ url_for('friend_list') }}"><img src="{{ url_for('static', filename='images/' + myfriends) }}">Friends</a>
+                    <a href="{{ url_for('chat') }}"><img src="{{ url_for('static', filename='images/' + inbox) }}">Chat</a>
+                    <a href="{{ url_for('notifications') }}"><img src="{{ url_for('static', filename='images/' + notificationbell) }}">Notifications</a>
+                    <a href="{{ url_for('servers') }}"><img src="{{ url_for('static', filename='images/' + group) }}">Servers</a>
+                    <a href="{{ url_for('reels') }}"><img src="{{ url_for('static', filename='images/' + video) }}">Reels</a>
+                    <a href="{{ url_for('webinar') }}"><img src="{{ url_for('static', filename='images/' + webinar) }}">Webinar</a>
+                    <a href="{{ url_for('essays') }}">
+                        <img src="{{ url_for('static', filename='images/essays.png') }}" alt="Essays Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                        Essays
+                    </a>
+                    <a href="{{ url_for('mentors') }}">
+                        <img src="{{ url_for('static', filename='images/mentor.jpg') }}" alt="Mentors Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                        Mentors
+                    </a>  
+                    <a href="{{ url_for('challenges') }}">
+                        <img src="{{ url_for('static', filename='images/mentor.jpg') }}" alt="Challenges Icon" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;">
+                        Challenges
+                    </a>
+
+                </div>
+
+            </div>
+            
+
+            <!-- Main Content: Video Feed -->
+        <div class="main-content">
+
+
+            <h2>Edit Course</h2>
+    <form action="{{ url_for('edit_course', slug=course.slug) }}" method="post" enctype="multipart/form-data">
+        
+        <!-- Course Information -->
+        <div class="form-group">
+            <label>Course Title:</label>
+            <input type="text" name="title" value="{{ course.title }}">
+        </div>
+        <div class="form-group">
+            <label>Course Description:</label>
+            <textarea name="description">{{ course.description }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Category:</label>
+            <select name="category">
+                <option value="">Select Category</option>
+                <option value="Science" {% if course.category == 'Science' %}selected{% endif %}>Science</option>
+                <option value="Math" {% if course.category == 'Math' %}selected{% endif %}>Math</option>
+                <option value="Technology" {% if course.category == 'Technology' %}selected{% endif %}>Technology</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Change Course Thumbnail:</label>
+            <input type="file" name="thumbnail" accept="image/*">
+        </div>
+
+        <!-- Course Videos -->
+        <h3>Course Videos</h3>
+        {% for video in course.videos %}
+            <div class="form-group" id="video-{{ video.id }}">
+                <input type="hidden" name="video_id[]" value="{{ video.id }}">
+                <label>Video Title:</label>
+                <input type="text" name="video_title[]" value="{{ video.title }}">
+                <label>Video Description:</label>
+                <textarea name="video_description[]">{{ video.description }}</textarea>
+                <label>Change Video File:</label>
+                <input type="file" name="video_file[]" accept="video/*">
+                <button type="button" onclick="deleteVideo('{{ video.id }}')">Delete Video</button>
+            </div>
+        {% endfor %}
+        <div id="videoContainer"></div>
+        <button type="button" onclick="addVideo()">Add Video</button>
+
+        <!-- Course Resources -->
+        <h3>Course Resources</h3>
+        {% for resource in course.resources %}
+            <div class="form-group" id="resource-{{ resource.id }}">
+                <input type="hidden" name="resource_id[]" value="{{ resource.id }}">
+                <label>Existing Resource:</label>
+                <span>{{ resource.filename }}</span>
+                <input type="file" name="resource_file[]" accept="image/*,video/*,application/pdf">
+                <button type="button" onclick="deleteResource('{{ resource.id }}')">Delete Resource</button>
+            </div>
+        {% endfor %}
+        <div id="resourceContainer"></div>
+        <button type="button" onclick="addResource()">Add Resource</button>
+
+        <!-- Course Assignments -->
+        <h3>Course Assignments</h3>
+        {% for assignment in course.assignments %}
+            <div class="form-group" id="assignment-{{ assignment.id }}">
+                <input type="hidden" name="assignment_id[]" value="{{ assignment.id }}">
+                <label>Existing Assignment:</label>
+                <span>{{ assignment.filename }}</span>
+                <input type="file" name="assignment_file[]" accept="image/*,video/*,application/pdf">
+                <button type="button" onclick="deleteAssignment('{{ assignment.id }}')">Delete Assignment</button>
+            </div>
+        {% endfor %}
+        <div id="assignmentContainer"></div>
+        <button type="button" onclick="addAssignment()">Add Assignment</button>
+
+        <!-- Instructor Information -->
+        <h3>Instructor Information</h3>
+        {% for instructor in course.instructors %}
+            <div class="form-group" id="instructor-{{ instructor.id }}">
+                <input type="hidden" name="instructor_id[]" value="{{ instructor.id }}">
+                <label>Instructor Name:</label>
+                <input type="text" name="instructor_name[]" value="{{ instructor.name }}">
+                <label>Profile Link:</label>
+                <input type="text" name="instructor_profile_link[]" value="{{ instructor.profile_link }}">
+                <label>Facebook Link:</label>
+                <input type="text" name="instructor_fb_link[]" value="{{ instructor.fb_link }}">
+                <label>LinkedIn Link:</label>
+                <input type="text" name="instructor_linkedin_link[]" value="{{ instructor.linkedin_link }}">
+                <label>Change Instructor Photo:</label>
+                <input type="file" name="instructor_photo[]" accept="image/*">
+                <button type="button" onclick="deleteInstructor('{{ instructor.id }}')">Delete Instructor</button>
+            </div>
+        {% endfor %}
+        <div id="instructorContainer"></div>
+        <button type="button" onclick="addInstructor()">Add Instructor</button>
+
+        <!-- Track Deletions -->
+        <div id="deletedItemsContainer"></div>
+
+        <button type="submit">Save Changes</button>
+    </form>
+</div>
+
+        <div class="right-siderbar">
+            <div class = "imp-links">
+                <a href="{{ url_for('public_feed') }}"><img src="{{ url_for('static', filename='images/' + homeicon) }}">Home</a>
+                <a href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/' + profileicon) }}">Profile</a>
+                <a href="{{ url_for('helpers_section') }}"><img src="{{ url_for('static', filename='images/' + helpersicon) }}">Helpers</a>
+                <a href="{{ url_for('scholarshipsearch') }}"><img src="{{ url_for('static', filename='images/' + scholarshipicon) }}">Scholarship Search</a>
+                <a href="{{ url_for('ai_search') }}"><img src="{{ url_for('static', filename='images/' + ai) }}">AI Search</a>
+                <a href="{{ url_for('courses') }}"><img src="{{ url_for('static', filename='images/' + mycourses) }}">Courses</a>
+            </div>
+        </div>
+
+        <script>
+            function addVideo() {
+                let container = document.getElementById("videoContainer");
+                let div = document.createElement("div");
+                div.className = "form-group";
+                div.innerHTML = `
+                    <label>New Video Title:</label>
+                    <input type="text" name="video_title[]" required>
+                    <label>New Video Description:</label>
+                    <textarea name="video_description[]" required></textarea>
+                    <label>Upload New Video File:</label>
+                    <input type="file" name="video_file[]" accept="video/*" required>
+                `;
+                container.appendChild(div);
+            }
+        
+            function deleteVideo(videoId) {
+                let container = document.getElementById("deletedItemsContainer");
+                container.innerHTML += `<input type="hidden" name="delete_video_id[]" value="${videoId}">`;
+                document.getElementById("video-" + videoId).remove();
+            }
+        
+            function addResource() {
+                let container = document.getElementById("resourceContainer");
+                let div = document.createElement("div");
+                div.className = "form-group";
+                div.innerHTML = `
+                    <label>Upload New Resource:</label>
+                    <input type="file" name="resource_file[]" accept="image/*,video/*,application/pdf" required>
+                `;
+                container.appendChild(div);
+            }
+        
+            function deleteResource(resourceId) {
+                let container = document.getElementById("deletedItemsContainer");
+                container.innerHTML += `<input type="hidden" name="delete_resource_id[]" value="${resourceId}">`;
+                document.getElementById("resource-" + resourceId).remove();
+            }
+        
+            function addAssignment() {
+                let container = document.getElementById("assignmentContainer");
+                let div = document.createElement("div");
+                div.className = "form-group";
+                div.innerHTML = `
+                    <label>Upload New Assignment:</label>
+                    <input type="file" name="assignment_file[]" accept="image/*,video/*,application/pdf" required>
+                `;
+                container.appendChild(div);
+            }
+        
+            function deleteAssignment(assignmentId) {
+                let container = document.getElementById("deletedItemsContainer");
+                container.innerHTML += `<input type="hidden" name="delete_assignment_id[]" value="${assignmentId}">`;
+                document.getElementById("assignment-" + assignmentId).remove();
+            }
+        
+            function addInstructor() {
+                let container = document.getElementById("instructorContainer");
+                let div = document.createElement("div");
+                div.className = "form-group";
+                div.innerHTML = `
+                    <label>Instructor Name:</label>
+                    <input type="text" name="instructor_name[]">
+                    <label>Profile Link:</label>
+                    <input type="text" name="instructor_profile_link[]">
+                    <label>Facebook Link:</label>
+                    <input type="text" name="instructor_fb_link[]">
+                    <label>LinkedIn Link:</label>
+                    <input type="text" name="instructor_linkedin_link[]">
+                    <label>Upload Instructor Photo:</label>
+                    <input type="file" name="instructor_photo[]" accept="image/*">
+                `;
+                container.appendChild(div);
+            }
+        
+            function deleteInstructor(instructorId) {
+                let container = document.getElementById("deletedItemsContainer");
+                container.innerHTML += `<input type="hidden" name="delete_instructor_id[]" value="${instructorId}">`;
+                document.getElementById("instructor-" + instructorId).remove();
+            }
+            function toggleMenu() {  
+   var menu = document.getElementById('nav-menu');  
+   menu.style.display = menu.style.display === 'block' ? 'none' : 'block';  
+}
+        </script>
+        
+        </body>
+        </html>
+        
+
+
+        
+</body>
+</html>
+
+
+
+
+
+

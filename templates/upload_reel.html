@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Reel - YouTube Style</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .upload-container {
+            width: 1000px;
+            max-width: 90%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            width: 100%;
+            padding: 20px;
+            background-color: #f8f9fa;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .upload-body {
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .drag-drop-area {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 50px;
+            background-color: #f8f8f8;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .drag-drop-area:hover {
+            background-color: #eaeaea;
+        }
+
+        .drag-drop-area input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .drag-drop-area p {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .icon-upload {
+            font-size: 48px;
+            color: #007bff;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            width: 0;
+            background-color: #007bff;
+            transition: width 0.5s;
+        }
+
+        .progress-percentage {
+            position: absolute;
+            bottom: auto;
+            left: 100%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #007bff;
+        }
+
+        /* Video Preview */
+        .video-preview {
+            margin-top: 20px;
+            text-align: left;
+            width: 100%;
+            max-width: 600px;
+            display: none;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 10px;
+            max-height: 300px;
+        }
+
+        /* Replace button */
+        .replace-btn {
+            margin-top: 15px;
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .replace-btn:hover {
+            background-color: #ff6666;
+        }
+
+        /* File details */
+        .file-details {
+            text-align: left;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        /* Username Suggestions */
+        .suggestions {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+            z-index: 100;
+            width: 100%;
+        }
+
+        .suggestions div {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .suggestions div:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .upload-container {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="upload-container">
+        <div class="header">Upload Your Video</div>
+
+        <div class="upload-body">
+            <form action="/upload_reel" method="POST" enctype="multipart/form-data">
+                
+                <!-- Drag and Drop Area -->
+                <div class="drag-drop-area" id="drag-drop-area">
+                    <i class="fas fa-cloud-upload-alt icon-upload"></i>
+                    <p>Drag & drop your video here, or <span style="color: #007bff;">browse</span> to select a file</p>
+                    <input type="file" id="reel_file" name="reel_file" accept="video/*" required onchange="handleFileSelect(event)">
+                </div>
+
+                <!-- Progress bar -->
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-bar-inner" id="progress-bar-inner"></div>
+                    </div>
+                    <span class="progress-percentage" id="progress-percentage">0%</span>
+                </div>
+
+                <!-- Video Preview -->
+                <div class="video-preview" id="video-preview">
+                    <h4>Preview:</h4>
+                    <video id="video-preview-element" controls></video>
+                </div>
+
+                <!-- Replace button -->
+                <button type="button" class="replace-btn" id="replace-btn" onclick="replaceVideo()">Replace Video</button>
+
+                <!-- Video details form -->
+                <div class="file-details">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" placeholder="Enter video title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4" placeholder="Describe your video" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tags">Tags (comma-separated)</label>
+                        <input type="text" id="tags" name="tags" placeholder="e.g. travel, adventure, food">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tagged_people">Tag Friends</label>
+                        <input type="text" id="tagged_people" name="tagged_people" placeholder="Enter a friend's username">
+                        <div id="suggestions" class="suggestions"></div>
+                    </div>
+        
+
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category">
+                            <option value="Travel">Travel</option>
+                            <option value="Food">Food</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Fashion">Fashion</option>
+                            <option value="Education">Education</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="visibility">Visibility</label>
+                        <select id="visibility" name="visibility">
+                            <option value="Public">Public</option>
+                            <option value="Friends">Friends Only</option>
+                            <option value="Private">Private</option>
+                        </select>
+                    </div>                    
+                </div>
+
+                <button type="submit" onclick="startUpload()">Upload</button>
+            </form>
+
+            <div class="form-footer">
+                <p>Your video will be reviewed and processed before it is made public.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dragDropArea = document.getElementById("drag-drop-area");
+        const reelFileInput = document.getElementById("reel_file");
+        const videoPreview = document.getElementById("video-preview");
+        const videoPreviewElement = document.getElementById("video-preview-element");
+        const progressBarInner = document.getElementById("progress-bar-inner");
+        const progressPercentage = document.getElementById("progress-percentage");
+        const fileDetails = document.getElementById("file-details");
+        const replaceBtn = document.getElementById("replace-btn");
+
+
+        const taggedPeopleInput = document.getElementById("tagged_people");
+        const suggestionsBox = document.getElementById("suggestions");
+
+        // Fetch suggestions when typing
+        taggedPeopleInput.addEventListener("input", function() {
+            const query = taggedPeopleInput.value;
+
+            if (query.length > 1) {
+                fetch(`/get_username_suggestions?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        suggestionsBox.innerHTML = ""; 
+                        data.suggestions.forEach(user => {
+                            const suggestionDiv = document.createElement("div");
+                            suggestionDiv.textContent = user.username;
+                            suggestionDiv.classList.add("suggestion-item");
+
+                            suggestionDiv.onclick = () => {
+                                taggedPeopleInput.value = user.username;
+                                suggestionsBox.innerHTML = ""; 
+                            };
+
+                            suggestionsBox.appendChild(suggestionDiv);
+                        });
+                        suggestionsBox.style.display = 'block';
+                    });
+            } else {
+                suggestionsBox.style.display = 'none'; 
+            }
+        });
+
+        // Handle file selection and show preview
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                startFakeUpload();
+                setTimeout(() => {
+                    const url = URL.createObjectURL(file);
+                    videoPreviewElement.src = url;
+                    videoPreview.style.display = "block";
+                    fileDetails.style.display = "block";
+                    replaceBtn.style.display = "block";
+                    progressBarInner.style.width = "100%";
+                    progressPercentage.textContent = "100%";
+                }, 5000); // slower progress
+            }
+        }
+
+        // Replace video function
+        function replaceVideo() {
+            videoPreview.style.display = "none";
+            fileDetails.style.display = "none";
+            replaceBtn.style.display = "none";
+            reelFileInput.value = ""; 
+            progressBarInner.style.width = "0%";
+            progressPercentage.textContent = "0%";
+        }
+
+        // Simulate file upload progress
+        function startFakeUpload() {
+            document.querySelector('.progress-container').style.display = 'block';
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressBarInner.style.width = progress + "%";
+                progressPercentage.textContent = progress + "%";
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                }
+            }, 500); // Slower progress speed
+        }
+
+        // Drag & Drop functionality
+        dragDropArea.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dragDropArea.style.backgroundColor = "#eaeaea";
+        });
+
+        dragDropArea.addEventListener("dragleave", () => {
+            dragDropArea.style.backgroundColor = "#fafafa";
+        });
+
+        dragDropArea.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dragDropArea.style.backgroundColor = "#fafafa";
+            const files = e.dataTransfer.files;
+            reelFileInput.files = files;
+            handleFileSelect({ target: { files } });
+        });
+    </script>
+
+</body>
+</html>
