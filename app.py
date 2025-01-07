@@ -1,12 +1,16 @@
+
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO, send, join_room, leave_room, emit
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 import os
-import re , smtplib
+import re
 import random
 from datetime import datetime
+import smtplib
+from uuid import uuid4
+
 
 from datetime import date
 import string
@@ -21,7 +25,7 @@ from sqlalchemy.exc import IntegrityError
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///advanced_platform.db'  # Update with your database URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['VIDEOS_FOLDER'] = 'static/videos'
+app.config['VIDEOS_FOLDER'] = "static/videos"
 app.config['REEL_FOLDER'] = 'static/reels'
 app.config['PROFILE_FOLDER'] = 'static/profile_pics'
 app.config['COURSE_VIDEO_FOLDER'] = 'static/courses'
@@ -30,9 +34,11 @@ app.config['COURSE_ASSIGNMENT_FOLDER'] = 'static/course_assignments'
 app.config['COURSE_INSTRUCTOR_FOLDER'] = 'static/course_instructors'
 app.config['COURSE_THUMBNAIL_FOLDER'] = 'static/courses_thumbnail'
 app.config['COURSE_VIDEO_FOLDER'] = 'static/courses'
-app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
+app.config['UPLOAD_FOLDER'] = 'static/uploads/photos'
 app.secret_key = 'super_secret_key'
 app.config['ALLOWED_EXTENSIONS'] = set()  # Empty set allows all file types
+
+
 
 
 
@@ -59,6 +65,7 @@ class User(db.Model):
     liked_reels = db.relationship('Reel', secondary=likes, backref='liked_by', lazy='dynamic')
     webinars = db.relationship('Webinar', backref='creator', lazy=True)
     courses_uploaded = db.relationship('Course', backref='uploader_user', lazy=True)  
+
 
 
     
@@ -146,6 +153,19 @@ class HelperRequest(db.Model):
     status = db.Column(db.String(50))  # Add this if missing
     
     # Relationships (optional) '''
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Define the relationship
+    user = db.relationship('User', backref='posts', lazy=True)
+
+
+    
 
 
 
@@ -364,6 +384,7 @@ class Video(db.Model):
     uploader_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     approved = db.Column(db.Boolean, default=False)
     unique_id = db.Column(db.String(10), unique=True, nullable=False)
+    
 
     uploader = db.relationship('User', backref=db.backref('videos', lazy=True))
 
@@ -423,12 +444,21 @@ class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
-    sender = db.relationship('User', backref='user_messages')
+    
+    # For private messages between users
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    user = db.relationship('User', backref='messages')
-    group = db.relationship('Group', backref='messages')
+    # For group messages
+    group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=True)
+
+    sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_messages')
+    receiver = db.relationship('User', foreign_keys=[receiver_id], backref='received_messages')
+    group = db.relationship('Group', backref='group_messages')
+
+    def __repr__(self):
+        return f'<Message {self.content}>'
+
 
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -581,70 +611,8 @@ def inject_global_variables():
         'livevideo': "live-video.png",
         'portfolioicon' : "portfolioicon.png",
         'resumeicon' : "resumeicon.png",
+        'mylogo' : 'logo.jpg',
     }
-
-@app.route('/<university_name>')
-def university_page(university_name):
-    # Check if the user is logged in and retrieve the user object
-    user = User.query.filter_by(username=session['username']).first() if 'username' in session else None
-    
-    # Default profile picture if the user does not have one
-    user_profile_pic = user.profile_pic if user and user.profile_pic else 'default.jpg'
-
-    # Asset dictionary to handle university-specific and common images
-    assets = {
-        "notification": "notification.png",
-        "inbox": "chaticon.png",
-        "video": "videoicon.png",
-        "search": "search.png",
-        "friends": "friendsicon.png",
-        "group": "servericon.png",
-        "courses": "coursesicon.png",
-        "notificationbell": "notificationbell.png",
-        "webinar": "wbinar.png",
-        "chat": "inbox.png",
-        "reels": "video.png",
-        "homeicon": "homeicon.png",
-        "profileicon": "profileicon.png",
-        "helpersicon": "helpers.png",
-        "ai": "ai.png",
-        "scholarshipicon": "scholarshipicon.png",
-        "photo": "photo.png",
-        "livevideo": "live-video.png",
-    }
-
-
-    # Ensure the university name is correctly formatted for template rendering
-    if university_name.endswith('.html'):
-        university_name = university_name[:-5]  # Strip '.html' extension for safety
-
-    # Get the specific university image or a default one
-    university_image = f"{university_name}.jpeg"
-
-    harvarduniversity = "harvarduniversity.jpeg"
-    stanforduniversity = "stanforduniversity.jpeg"
-    texasstateuniversity = "texastateuniversity.jpeg"
-
-    # Render the template with context
-    return render_template(
-        f'{university_name}.html',
-        user=user,
-        user_profile_pic=user_profile_pic,
-        university_image=university_image,
-        harvarduniversity = harvarduniversity,
-        stanforduniversity = stanforduniversity,
-        texasstateuniversity = texasstateuniversity,
-        **assets  # Unpack assets to be used in the template
-    )
-
-
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -782,48 +750,54 @@ def add_info():
     return render_template('Add_info.html')
 
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['username/email']
         password = request.form['password']
+        username = None
         
-        # Retrieve the user based on the username
-        user = User.query.filter_by(username=username).first()
+        # Retrieve the user based on the username or email
+        user = (User.query.filter_by(username=email).first() or User.query.filter_by(email=email).first())
+        
+        if user:
+            username = user.username  # Only access 'username' if user is not None
+            
+            if user.check_password(password):
+                # Store username, user ID, and friends list in the session
+                session['username'] = username
+                session['user_id'] = user.id  # Store user ID in the session
+                session['friends'] = [friend.username for friend in user.friends]  # Initialize friends list in session
 
-        if user and user.check_password(password):
-            # Store username, user ID, and friends list in the session
-            session['username'] = username
-            session['user_id'] = user.id  # Store user ID in the session
-            session['friends'] = [friend.username for friend in user.friends]  # Initialize friends list in session
-            
-            # Directly access GPA attributes from the user object
-            user_gpa_9 = user.gpa_class_9
-            user_gpa_10 = user.gpa_class_10
-            user_gpa_11 = user.gpa_class_11
-            user_gpa_12 = user.gpa_class_12
-            user_sat_score = user.sat_score
-            
-            # Check if any required fields are missing
-            if (
-                user_gpa_9 is None or 
-                user_gpa_10 is None or 
-                user_gpa_11 is None or 
-                user_gpa_12 is None or 
-                user_sat_score is None
-            ):
-                return redirect(url_for('add_info'))
+                # Directly access GPA attributes from the user object
+                user_gpa_9 = user.gpa_class_9
+                user_gpa_10 = user.gpa_class_10
+                user_gpa_11 = user.gpa_class_11
+                user_gpa_12 = user.gpa_class_12
+                user_sat_score = user.sat_score
+
+                # Check if any required fields are missing
+                if (
+                    user_gpa_9 is None or 
+                    user_gpa_10 is None or 
+                    user_gpa_11 is None or 
+                    user_gpa_12 is None or 
+                    user_sat_score is None
+                ):
+                    return redirect(url_for('add_info'))
+                else:
+                    return redirect(url_for('public_feed'))  # Redirect to public feed instead of dashboard
             else:
-                return redirect(url_for('public_feed'))  # Redirect to public feed instead of dashboard
+                # If password is incorrect, show an error message
+                message = "Oops! Wrong Username or Password."
+                return render_template('login.html', message=message, username=username, password=password)
         else:
-            # If login fails, show an error message
-            message = "Oops! Wrong Username or Password."
-            return render_template('login.html', message=message, username=username, password=password)
+            # If user is not found, show an error message
+            message = "Oops! User not found."
+            return render_template('login.html', message=message, username=email, password=password)
     
     # Render the login page for GET requests
     return render_template('login.html')
-
 
 
 import random
@@ -895,9 +869,109 @@ def new_password():
 
 
 
-@app.route('/chat')
+@app.route('/<university_name>')
+def university_page(university_name):
+    # Check if the user is logged in and retrieve the user object
+    user = User.query.filter_by(username=session['username']).first() if 'username' in session else None
+    
+    # Default profile picture if the user does not have one
+    user_profile_pic = user.profile_pic if user and user.profile_pic else 'default.jpg'
+
+    # Asset dictionary to handle university-specific and common images
+    assets = {
+        "notification": "notification.png",
+        "inbox": "chaticon.png",
+        "video": "videoicon.png",
+        "search": "search.png",
+        "friends": "friendsicon.png",
+        "group": "servericon.png",
+        "courses": "coursesicon.png",
+        "notificationbell": "notificationbell.png",
+        "webinar": "webinar.png",
+        "chat": "inbox.png",
+        "reels": "video.png",
+        "homeicon": "homeicon.png",
+        "profileicon": "profileicon.png",
+        "helpersicon": "helpers.png",
+        "ai": "ai.png",
+        "scholarshipicon": "scholarshipicon.png",
+        "photo": "photo.png",
+        "livevideo": "live-video.png",
+    }
+
+
+
+    # Ensure the university name is correctly formatted for template rendering
+    if university_name.endswith('.html'):
+        university_name = university_name[:-5]  # Strip '.html' extension for safety
+
+    # Get the specific university image or a default one
+    university_image = f"{university_name}.jpeg"
+
+    harvarduniversity = "harvarduniversity.jpeg"
+    stanforduniversity = "stanforduniversity.jpeg"
+    texasstateuniversity = "texastateuniversity.jpeg"
+
+    # Render the template with context
+    return render_template(
+        f'{university_name}.html',
+        user=user,
+        user_profile_pic=user_profile_pic,
+        university_image=university_image,
+        harvarduniversity = harvarduniversity,
+        stanforduniversity = stanforduniversity,
+        texasstateuniversity = texasstateuniversity,
+        **assets  # Unpack assets to be used in the template
+    )
+
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+def is_valid_password(password):
+    # Define the pattern for strong passwords
+    pattern = r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+    # Check if the password matches the pattern
+    return bool(re.match(pattern, password))
+
+
+
+
+import random
+from flask import session
+from itertools import cycle
+
+# Global variables to control chunk rotation and stop condition
+chunk_rotation_iterator = None
+last_chunk_order = None
+rotation_stopped = False  # Flag to indicate whether rotation has stopped
+
+# Chat page route
+@app.route('/chat', methods=['GET', 'POST'])
 def chat():
-    return render_template('chat.html')
+    if request.method == 'POST':
+        content = request.form['content']
+        username = session.get('username', 'Guest')  # Default to 'Guest' if no user is logged in
+        server_id = request.form['server_id']  # Assume you pass server ID from the frontend
+
+        # Save the message to the database
+        new_message = ChatMessage(content=content, username=username, server_id=server_id)
+        db.session.add(new_message)
+        db.session.commit()
+
+    # Get chat messages for the specific server
+    server_id = request.args.get('server_id')  # Assume server ID is passed as query parameter
+    messages = ChatMessage.query.filter_by(server_id=server_id).order_by(ChatMessage.timestamp.asc()).all()
+    user = User.query.filter_by(username=session['username']).first()
+
+    # Assuming you have a 'Friendship' table or a relationship in the 'User' model
+    # Query for the friends of the logged-in user
+    friends = user.friends  # Assuming `friends` is a relationship defined in the User model
+    
+
+    return render_template('chat.html', messages=messages, server_id=server_id, friends=friends)
 
 @app.route('/essays')
 def essays():
@@ -914,7 +988,13 @@ def scholarshipsearch():
 
 @app.route('/upload_essay')
 def upload_essay():
-    return render_template('upload_essay')
+        return render_template('upload_essay')
+
+
+
+
+
+
 
 
 
@@ -923,53 +1003,53 @@ def upload_essay():
 def courses():
     global chunk_rotation_iterator, last_chunk_order, rotation_stopped
 
-    # Fetch courses from the database, ordered by upload time (most recent first)
+        # Fetch courses from the database, ordered by upload time (most recent first)
     courses = Course.query.order_by(Course.upload_time.desc()).all()
 
-    # Determine chunk size dynamically based on the total number of courses
+        # Determine chunk size dynamically based on the total number of courses
     total_courses = len(courses)
     chunk_size = max(2, total_courses // 5)  # Minimum chunk size is 2
 
-    # Divide courses into chunks
+        # Divide courses into chunks
     chunks = [courses[i:i + chunk_size] for i in range(0, len(courses), chunk_size)]
 
-    # Shuffle courses within each chunk
+        # Shuffle courses within each chunk
     for chunk in chunks:
         random.shuffle(chunk)
 
-    if rotation_stopped:
-        # If rotation is stopped, maintain the last chunk order
-        rotated_chunks = last_chunk_order
-    else:
-        # Initialize or update the global iterator for rotating chunks
-        if not chunk_rotation_iterator:
-            chunk_rotation_iterator = cycle(range(len(chunks)))
-
-        # Get the next chunk rotation order
-        try:
-            rotation_index = next(chunk_rotation_iterator)
-        except StopIteration:
-            rotation_index = None  # or some other default value
-
-
-        # Rotate chunks: Bring the selected chunk to the front
-        rotated_chunks = chunks[rotation_index:] + chunks[:rotation_index]
-
-        # Check if the current rotated order matches the previous one
-        if rotated_chunks == last_chunk_order:
-            rotation_stopped = True  # Stop further rotation
+        if rotation_stopped:
+            # If rotation is stopped, maintain the last chunk order
+            rotated_chunks = last_chunk_order
         else:
-            last_chunk_order = rotated_chunks  # Update the last chunk order
+            # Initialize or update the global iterator for rotating chunks
+            if not chunk_rotation_iterator:
+                chunk_rotation_iterator = cycle(range(len(chunks)))
 
-    # Flatten the rotated and shuffled chunks into a single list
-    shuffled_courses = [course for chunk in rotated_chunks for course in chunk]
+            # Get the next chunk rotation order
+            try:
+                rotation_index = next(chunk_rotation_iterator)
+            except StopIteration:
+                rotation_index = None  # or some other default value
 
-    # Debugging output (optional)
-    print(f"Rotated Chunks Order: {rotated_chunks}")
-    print(f"Shuffled Courses: {[course.title for course in shuffled_courses]}")
 
-    # Render the courses page
-    return render_template('courses.html', courses=shuffled_courses)
+            # Rotate chunks: Bring the selected chunk to the front
+            rotated_chunks = chunks[rotation_index:] + chunks[:rotation_index]
+
+            # Check if the current rotated order matches the previous one
+            if rotated_chunks == last_chunk_order:
+                rotation_stopped = True  # Stop further rotation
+            else:
+                last_chunk_order = rotated_chunks  # Update the last chunk order
+
+        # Flatten the rotated and shuffled chunks into a single list
+        shuffled_courses = [course for chunk in rotated_chunks for course in chunk]
+
+        # Debugging output (optional)
+        print(f"Rotated Chunks Order: {rotated_chunks}")
+        print(f"Shuffled Courses: {[course.title for course in shuffled_courses]}")
+
+        # Render the courses page
+        return render_template('courses.html', courses=shuffled_courses)
 
 
 
@@ -1856,56 +1936,9 @@ def request_counsel(receiver_id):
 
 @app.route('/ai_search', methods=['GET', 'POST'])
 def ai_search():
-    if 'username' not in session:
-        return redirect(url_for('login'))
+    return redirect("https://collegerecommender.netlify.app/")
 
-    user = User.query.filter_by(username=session['username']).first()
-
-    # Initialize flags for rendering template
-    manual_input = False
-    results = None
-
-    if request.method == 'POST':
-        if 'search_current_profile' in request.form:
-            # Generate a profile summary from the user's current data
-            profile_summary = (
-                f"User has a GPA of {user.gpa or 'not provided'}, "
-                f"SAT score of {user.sat_score or 'not provided'}, "
-                f"is majoring in {user.major_subject or 'not specified'} and minoring in {user.minor_subject or 'not specified'}, "
-                f"and is involved in the following extracurricular activities: {user.eca or 'none'}."
-            )
-            # Call the function to get university recommendations
-            #results = get_university_recommendations(profile_summary)
-        #    results = results.replace('\n', '<br>')  # Format for HTML display
-
-        elif 'manual_input' in request.form:
-            # Set flag to show manual input form
-            manual_input = True
-
-        elif 'submit_manual_input' in request.form:
-            # Collect data from manual input form
-            gpa = request.form['gpa']
-            sat_score = request.form['sat_score']
-            eca = request.form['eca']
-            essay = request.form['essay']
-            major = request.form['major']
-            minor = request.form['minor']
-            
-            # Generate a profile summary from the manual input
-            profile_summary = (
-                f"User has a GPA of {gpa}, SAT score of {sat_score}, "
-                f"is majoring in {major} and minoring in {minor}, "
-                f"and is involved in the following extracurricular activities: {eca}."
-            )
-            # Call the function to get university recommendations
-           # results = get_university_recommendations(profile_summary)
-            results = results.replace('\n', '<br>')  # Format for HTML display
-
-    return render_template('ai_search.html', user=user, results=results, manual_input=manual_input)
-
-
-
-
+    
 
 
 
@@ -2554,25 +2587,25 @@ from random import shuffle
 
 @app.route('/public_feed')
 def public_feed():
-
     if 'username' not in session:
         return redirect(url_for('login'))
-    
-    session.pop('user_type' , None)
 
     # Retrieve the user
     user = User.query.filter_by(username=session['username']).first()
-    videos = Video.query.order_by(Video.id.desc()).all()  # Order videos by upload time (latest first)
+    if not user:
+        return redirect(url_for('login'))
 
-    # Separate videos by visibility
+    # Retrieve all posts ordered by creation time (newest first)
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+
+    # Retrieve videos and separate them by visibility
+    videos = Video.query.order_by(Video.id.desc()).all()  # Order videos by upload time (latest first)
     public_videos = [video for video in videos if video.privacy == 'public']
     friends_videos = [video for video in videos if video.privacy == 'friends' and video.uploader in user.friends]
     user_videos = [video for video in videos if video.uploader_id == user.id]
-
-    # Combine all visible videos, ensuring no duplicates
     visible_videos = list({video.id: video for video in public_videos + friends_videos + user_videos}.values())
 
-    # Determine the number of chunks
+    # Determine the number of chunks and shuffle videos
     total_videos = len(visible_videos)
     if total_videos <= 10:
         num_chunks = 5
@@ -2580,42 +2613,46 @@ def public_feed():
         num_chunks = 10
     else:
         num_chunks = 50
-
-    # Determine videos per chunk
-    videos_per_chunk = math.ceil(total_videos / num_chunks)
-
-    if videos_per_chunk == 0:
-        videos_per_chunk = 1  # Ensure videos_per_chunk is at least 1
-
+    videos_per_chunk = max(1, math.ceil(total_videos / num_chunks))
     chunks = [visible_videos[i:i + videos_per_chunk] for i in range(0, total_videos, videos_per_chunk)]
-
-
-    # Shuffle videos within each chunk
     for chunk in chunks:
         shuffle(chunk)
 
-    # Track the number of refreshes (can use session or another mechanism)
-    if 'refresh_count' not in session:
-        session['refresh_count'] = 0
-    session['refresh_count'] += 1
-
-    # Flatten the rotated chunks into a single list
-
- 
+    # Retrieve friend requests
     received_requests = FriendRequest.query.filter_by(receiver_id=user.id, status='pending').all()
 
-    user_profile_pic = user.profile_pic if user.profile_pic else 'default.jpg'
+    # Retrieve courses
     courses = Course.query.order_by(Course.upload_time.desc()).all()
 
+    # Set user's profile picture
+    user_profile_pic = user.profile_pic if user.profile_pic else 'default.jpg'
+    # Path to the uploads directory
+    upload_dir = os.path.join(app.config['UPLOAD_FOLDER'])
+    
+    # List all image files in the uploads directory
+    image_files = []
+    if os.path.exists(upload_dir):
+        image_files = [
+            file for file in os.listdir(upload_dir) 
+            if file.lower().endswith(('.jpg', '.jpeg', '.png', '.gif'))
+        ]
+    
 
+    
 
+    # Render the feed template
     return render_template(
         'public_feed.html',
         user=user,
         user_profile_pic=user_profile_pic,
+        posts=posts,
+        visible_videos=chunks,  # Pass shuffled video chunks
         received_requests=received_requests,
-        courses = courses,
+        courses=courses,
+        manyimages=image_files,
+        
     )
+
 
 
 @app.route('/get_reaction_users/<int:video_id>/<reaction_type>', methods=['GET'])
@@ -2644,37 +2681,51 @@ def upload_video():
         description = request.form['description']
         category = request.form['category']
         tags = request.form['tags']
-        privacy = request.form['privacy']
+        privacy = request.form.get('privacy', 'public')
         video_file = request.files['video_file']
+
+        # Validate form inputs
+        if not title or not description or not video_file:
+            flash('All fields are required.')
+            return redirect(url_for('upload_video'))
+        
+        if not allowed_file(video_file.filename):
+            flash('Invalid file type. Please upload a video file.')
+            return redirect(url_for('upload_video'))
 
         # Ensure the directory for videos exists
         video_dir = app.config['VIDEOS_FOLDER']
         if not os.path.exists(video_dir):
             os.makedirs(video_dir)
 
-        # Save the uploaded video file
-        if video_file:
-            filename = secure_filename(video_file.filename)
-            video_path = os.path.join(video_dir, filename)
-            video_file.save(video_path)
+        # Save the uploaded video file with a unique filename
+        original_filename = secure_filename(video_file.filename)
+        unique_filename = f"{uuid4().hex}_{original_filename}"
+        video_path = os.path.join(video_dir, unique_filename)
+        video_file.save(video_path)
 
-            # Get the uploader and save video details in the database
-            uploader = User.query.filter_by(username=session['username']).first()
-            new_video = Video(
-                title=title, 
-                description=description, 
-                filename=filename, 
-                category=category, 
-                uploader_id=uploader.id,
-                tags=tags,
-                privacy=privacy
-            )
+        # Save video details to the database
+        uploader = User.query.filter_by(username=session['username']).first()
+        new_video = Video(
+            title=title,
+            description=description,
+            filename=unique_filename,
+            category=category,
+            uploader_id=uploader.id,
+            tags=tags,
+            privacy=privacy
+        )
+        try:
             db.session.add(new_video)
             db.session.commit()
-
             return redirect(url_for('view_video_by_unique_id', unique_id=new_video.unique_id))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while saving the video. Please try again.')
+            return redirect(url_for('upload_video'))
     
     return render_template('upload_video.html')
+
 
 
 @app.route('/friend_list')
@@ -2702,18 +2753,20 @@ def upload_photo():
     if request.method == 'POST':
         photo_file = request.files['photo_file']
         if photo_file:
-            photo_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'photos')
-            if not os.path.exists(photo_dir):
-                os.makedirs(photo_dir)
+            # Directory to save uploaded photos
+            upload_dir = app.config['UPLOAD_FOLDER']
+            if not os.path.exists(upload_dir):
+                os.makedirs(upload_dir)
             
+            # Save the uploaded file securely
             filename = secure_filename(photo_file.filename)
-            photo_path = os.path.join(photo_dir, filename)
+            photo_path = os.path.join(upload_dir, filename)
             photo_file.save(photo_path)
-            # Logic to save photo details to the database
-            return redirect(url_for('dashboard'))
+            
+            # Redirect to public_feed after upload
+            return redirect(url_for('public_feed'))
     
     return render_template('upload_photo.html')
-
 
 
 @app.route('/react_video/<int:video_id>', methods=['POST'])
@@ -2810,8 +2863,16 @@ def view_video(video_id):
     if not video:
         abort(404)  # Return a 404 error if the video is not found
 
-    # Render the video details in the view_video.html template
-    return render_template('view_video.html', video=video)
+    # Fetch the uploader (the user who uploaded the video)
+    uploader = User.query.get(video.uploader_id)
+    if not uploader:
+        uploader = None  # Handle case if uploader is not found
+
+    # Optionally, fetch comments associated with the video
+    comments = Comment.query.filter_by(video_id=video.id).all()
+
+    # Render the video details, uploader, and comments in the template
+    return render_template('view_video.html', video=video, uploader=uploader, comments=comments)
 
 
 @app.route('/notifications')
@@ -3004,35 +3065,46 @@ def delete_video(video_id):
 
     return 'Video deleted successfully', 200
 
-
 @app.route('/chat/<int:user_id>', methods=['GET', 'POST'])
 def private_chat(user_id):
     if 'username' not in session:
         return redirect(url_for('login'))
 
+    current_user = User.query.filter_by(username=session['username']).first()
     chat_user = User.query.get_or_404(user_id)
+
+    room = f'private_{min(current_user.id, chat_user.id)}_{max(current_user.id, chat_user.id)}'
 
     # Check if a message is sent
     if request.method == 'POST':
         message_content = request.form['message']
+        print("\n\n\n\n\n\n", message_content , "\n\n\n\n\n\n")
         if message_content:
             # Save the new message to the database
             new_message = Message(
                 content=message_content,
+                sender_id=current_user.id,
                 receiver_id=chat_user.id
             )
             db.session.add(new_message)
             db.session.commit()
-
+            
+            print("\n\n\n\n\n" , new_message , "\n\n\n\n\n")    
             # Send the message to the recipient in real-time using SocketIO
-            socketio.emit('receive_message', {
+            socketio.emit('receive_private_message', {
+                'sender': current_user.username,
                 'message': message_content,
-                'timestamp': new_message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
-            },)
+                'timestamp': new_message.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                'room': room
+            }, room=room)
 
-    # Retrieve all  messages between the two users
+    # Retrieve all private messages between the two users
     messages = Message.query.filter(
+        ((Message.sender_id == current_user.id) & (Message.receiver_id == chat_user.id)) |
+        ((Message.sender_id == chat_user.id) & (Message.receiver_id == current_user.id))
     ).order_by(Message.timestamp).all()
+
+    return render_template('private_chat.html', current_user=current_user, chat_user=chat_user, messages=messages, room=room)
 
 
 @app.route('/dashboard')
@@ -3156,8 +3228,36 @@ def handle_private_message(data):
 def server_chat(server_id):
     server = Server.query.get_or_404(server_id)
     user = User.query.filter_by(username=session['username']).first()
+
     chat_history = ChatMessage.query.filter_by(server_id=server_id).order_by(ChatMessage.timestamp).all()
+
+    print("\n\n\n" , chat_history , "\n\n\n")
+
     return render_template('server_chat.html', server=server, user=user, chat_history=chat_history)
+    
+
+@app.route('/create_post', methods=['POST'])
+def create_post():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    user = User.query.filter_by(username=session['username']).first()
+
+    # Get the post content from the form
+    content = request.form.get('content')
+
+    if not content:
+        flash("Post content cannot be empty.", "error")
+        return redirect(url_for('public_feed'))
+
+    # Create a new post and save it to the database
+    new_post = Post(content=content, user_id=user.id)
+    db.session.add(new_post)
+    db.session.commit()
+
+    flash("Your post has been created!", "success")
+    return redirect(url_for('public_feed'))
+
 
 
 # Handle incoming messages
@@ -3172,7 +3272,24 @@ def handle_message(data):
         'message': message,
         'username': username
     }, room=f'server_{server_id}')
+  
+    chat_history = ChatMessage(
+    server_id=server_id,
+    content=message,  # Correct field
+    username=username
+)
 
+    try:
+        db.session.add(chat_history)
+        db.session.commit()
+        
+    except Exception as e:
+        print(f"Error saving message to the database: {e}")
+        db.session.rollback()
+        return "Couldn't save the message"
+
+    # Save the message to the database
+    
 # Join the room for this server
 @socketio.on('join')
 def on_join(data):
@@ -3197,9 +3314,8 @@ def handle_join_private_chat(data):
     join_room(room)
 
 
+
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Create all tables defined in models
-    socketio.run(app)
-    app.run()
-
+        db.create_all()
+    socketio.run(app,  debug= True , host="0.0.0.0" , port= 8080)
